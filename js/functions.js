@@ -1,34 +1,31 @@
+//eslint-disable-next-line-no-unused-vars
 const isStringPalindrom = (string) => {
   string = string.replaceAll(' ', '').toLowerCase();
   for (let i = 0; i < Math.floor(string.length / 2); i++) {
-    if (!(string.at(i) === string.at(string.length - 1 - i))) {
+    if (string[i] !== string[string.length - 1 - i]) {
       return false;
     }
   }
   return true;
 };
 
-
-const getNumber = (string) => {
-  let tempStr = '';
-  if (typeof (string) === 'number') {
-    string = String(string);
-  }
-  for (let i = 0; i < string.length; i++) {
-    if (!Number.isNaN(parseInt(string.at(i), 10))) {
-      tempStr += string.at(i);
-    }
-  }
-  return parseInt(tempStr, 10);
-};
+//eslint-disable-next-line-no-unused-vars
+const extractNumber = (string) => parseInt(String(string).replace(/\D/g, ''), 10);
 
 
+//eslint-disable-next-line-no-unused-vars
 const isNormalLength = (string, maxLength) => string.length <= maxLength;
 
 
-const addingStr = (string, minLength, addStr) => {
-  while (string.length < minLength) {
-    string = string.length - minLength >= addStr.length ? addStr + string : addStr.slice(0, minLength - string.length) + string;
+//eslint-disable-next-line-no-unused-vars
+const padStart = (string, length, template) => {
+  while (string.length < length) {
+    string = string.length - length >= template.length ? template + string : template.slice(0, length - string.length) + string;
   }
   return string;
 };
+
+isStringPalindrom('ДовОд');
+extractNumber('1 кефир, 0.5 батона');
+isNormalLength('проверяемая строка', 18);
+padStart('q', 4, 'werty');
