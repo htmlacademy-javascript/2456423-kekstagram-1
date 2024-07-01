@@ -1,3 +1,6 @@
 import {createDescription} from './data.js';
+import {createPictures} from './create-pictures.js';
 
-createDescription();
+const descriptions = createDescription();
+
+createPictures(descriptions);
