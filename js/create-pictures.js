@@ -8,6 +8,7 @@ const createPictures = function(descriptions) {
     picture.querySelector('.picture__img').src = description.url;
     picture.querySelector('.picture__comments').textContent = description.comments.length;
     picture.querySelector('.picture__likes').textContent = description.likes;
+    picture.dataset.pictureId = description.id;
     pictureListFragment.append(picture);
   });
 
