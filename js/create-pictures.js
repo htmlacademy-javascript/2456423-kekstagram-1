@@ -1,3 +1,5 @@
+import{openFullScreenImage} from './create-fullscreen-picture.js';
+
 const createPictures = function(descriptions) {
   const picturesContainer = document.querySelector('.pictures');
   const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
@@ -8,10 +10,15 @@ const createPictures = function(descriptions) {
     picture.querySelector('.picture__img').src = description.url;
     picture.querySelector('.picture__comments').textContent = description.comments.length;
     picture.querySelector('.picture__likes').textContent = description.likes;
-    pictureListFragment.append(picture);
-  });
+    picture.dataset.pictureId = description.id;
+    picture.addEventListener('click', () => {
+      openFullScreenImage(description);
+    });
 
-  picturesContainer.append(pictureListFragment);
+    pictureListFragment.append(picture);
+
+    picturesContainer.append(pictureListFragment);
+  });
 };
 
 export{createPictures};
