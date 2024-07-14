@@ -1,3 +1,5 @@
+import{openFullScreenImage} from './create-fullscreen-picture.js';
+
 const createPictures = function(descriptions) {
   const picturesContainer = document.querySelector('.pictures');
   const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
@@ -13,6 +15,13 @@ const createPictures = function(descriptions) {
   });
 
   picturesContainer.append(pictureListFragment);
+
+  picturesContainer.addEventListener('click', (evt) => {
+    const picture = evt.target.closest('.picture');
+    if(picture) {
+      openFullScreenImage(picture, descriptions);
+    }
+  });
 };
 
 export{createPictures};
