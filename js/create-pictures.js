@@ -11,16 +11,13 @@ const createPictures = function(descriptions) {
     picture.querySelector('.picture__comments').textContent = description.comments.length;
     picture.querySelector('.picture__likes').textContent = description.likes;
     picture.dataset.pictureId = description.id;
+    picture.addEventListener('click', () => {
+      openFullScreenImage(description);
+    });
+
     pictureListFragment.append(picture);
-  });
 
-  picturesContainer.append(pictureListFragment);
-
-  picturesContainer.addEventListener('click', (evt) => {
-    const picture = evt.target.closest('.picture');
-    if(picture) {
-      openFullScreenImage(picture, descriptions);
-    }
+    picturesContainer.append(pictureListFragment);
   });
 };
 
