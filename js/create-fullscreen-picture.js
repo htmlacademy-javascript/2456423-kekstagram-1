@@ -8,16 +8,9 @@ const commentsLoader = bigPicture.querySelector('.social__comments-loader');
 let commentsCount = 0;
 let Description = null;
 
-const createSotialCommentsCount = (commentsArrayLength) => {
+const createComments = (description) => {
   const commentsCountText = bigPicture.querySelector('.comments-count').cloneNode();
   const sotialCommentsCount = bigPicture.querySelector('.social__comment-count');
-  sotialCommentsCount.innerHTML = ' ';
-  sotialCommentsCount.textContent = `${commentsCount} из `;
-  commentsCountText.textContent = commentsArrayLength;
-  sotialCommentsCount.append(commentsCountText);
-};
-
-const createComments = (description) => {
   const commentsListFragment = document.createDocumentFragment();
   const commentsArray = description.comments;
   const commentsArrayLength = commentsArray.length;
@@ -34,13 +27,12 @@ const createComments = (description) => {
 
   commentsCount += numberAddingComments;
 
-  createSotialCommentsCount(commentsArrayLength);
+  sotialCommentsCount.innerHTML = ' ';
+  sotialCommentsCount.textContent = `${commentsCount} из `;
+  commentsCountText.textContent = commentsArrayLength;
+  sotialCommentsCount.append(commentsCountText);
 
-  if(commentsCount === commentsArrayLength) {
-    commentsLoader.disabled = true;
-  } else {
-    commentsLoader.disabled = false;
-  }
+  commentsLoader.disabled = commentsCount === commentsArrayLength;
 
   return commentsListFragment;
 };
