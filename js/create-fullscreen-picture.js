@@ -6,7 +6,7 @@ const bigPictureCancel = document.querySelector('.big-picture__cancel');
 const comments = bigPicture.querySelector('.social__comments');
 const commentsLoader = bigPicture.querySelector('.social__comments-loader');
 let commentsCount = 0;
-let Description = null;
+let descriptionGlobal = null;
 
 const createComments = (description) => {
   const commentsCountText = bigPicture.querySelector('.comments-count').cloneNode();
@@ -53,12 +53,12 @@ const handleCloseButtonClick = () => {
 };
 
 const onCommentsLoaderClick = () => {
-  const commentsAdding = createComments(Description);
+  const commentsAdding = createComments(descriptionGlobal);
   comments.append(commentsAdding);
 };
 
 const openFullScreenImage = (description) => {
-  Description = description;
+  descriptionGlobal = description;
   bigPicture.querySelector('img').src = description.url;
   bigPicture.querySelector('.likes-count').textContent = description.likes;
   bigPicture.querySelector('.comments-count').textContent = description.comments.length;
