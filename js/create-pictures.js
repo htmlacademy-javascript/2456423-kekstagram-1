@@ -1,4 +1,4 @@
-import{openPictureModal} from './create-fullscreen-picture.js';
+import{openPictureModal} from './open-picture-modal.js';
 
 const createPictures = function(descriptions) {
   const picturesContainer = document.querySelector('.pictures');
