@@ -1,9 +1,7 @@
 import{openPictureModal} from './open-picture-modal.js';
-import{openFormModal} from './open-form-modal.js';
 
 const createPictures = function(descriptions) {
   const picturesContainer = document.querySelector('.pictures');
-  const uploadFile = document.querySelector('#upload-file');
   const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   const pictureListFragment = document.createDocumentFragment();
 
@@ -21,10 +19,6 @@ const createPictures = function(descriptions) {
     pictureListFragment.append(picture);
 
     picturesContainer.append(pictureListFragment);
-  });
-
-  uploadFile.addEventListener('change', () => {
-    openFormModal();
   });
 };
 
