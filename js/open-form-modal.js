@@ -1,9 +1,11 @@
-import{isKeyEscape} from './util.js';
+import { isKeyEscape } from './util.js';
+import { initImageEffect } from './init-image-effect.js';
 
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
 const HASH_TAGS_COUNT = 5;
 const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
 
+const uploadFile = document.querySelector('#upload-file');
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');
 const imgUploadCancel = document.querySelector('.img-upload__cancel');
 const form = document.querySelector('.img-upload__form');
@@ -40,13 +42,13 @@ pristine.addValidator(
 const isTextfieldFocused = () => document.activeElement === hashtagField || document.activeElement === commentField;
 
 const onKeyEscapeKeydown = (evt) => {
-  if(isKeyEscape(evt) && !isTextfieldFocused()) {
+  if (isKeyEscape(evt) && !isTextfieldFocused()) {
     evt.preventDefault();
-    handleCloseButtonClick();
+    closeFormModal();
   }
 };
 
-function handleCloseButtonClick() {
+function closeFormModal() {
   form.reset();
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
@@ -59,7 +61,7 @@ const openFormModal = () => {
   document.querySelector('body').classList.add('modal-open');
 
   document.addEventListener('keydown', onKeyEscapeKeydown);
-  imgUploadCancel.addEventListener('click', handleCloseButtonClick);
+  imgUploadCancel.addEventListener('click', closeFormModal);
 
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
@@ -67,4 +69,10 @@ const openFormModal = () => {
   });
 };
 
-export{openFormModal};
+const createFormModal = () => {
+  uploadFile.addEventListener('change', openFormModal);
+  initImageEffect();
+};
+
+export {createFormModal};
+
