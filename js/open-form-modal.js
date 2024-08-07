@@ -1,5 +1,5 @@
 import { isKeyEscape } from './util.js';
-import { createEffect } from './create-effect.js';
+import { initImageEffect } from './init-image-effect.js';
 
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
 const HASH_TAGS_COUNT = 5;
@@ -71,7 +71,7 @@ const openFormModal = () => {
 
 const createFormModal = () => {
   uploadFile.addEventListener('change', openFormModal);
-  createEffect();
+  initImageEffect();
 };
 
 export {createFormModal};

@@ -54,17 +54,6 @@ const scaleControl = document.querySelector('.scale__control--value');
 let effectSetting;
 let effectNameClass;
 
-const createEffectSlider = () => {
-  noUiSlider.create(sliderElement, {
-    range: {
-      min: 0,
-      max: 1,
-    },
-    start: 1,
-    step: 0.1,
-  });
-};
-
 const createEffectOnImage = () => {
   const nameEffect = effectSetting.nameEffect;
   const unitOfMeasure = effectSetting.unitOfMeasure;
@@ -73,55 +62,51 @@ const createEffectOnImage = () => {
   imagePreview.style.filter = `${nameEffect}(${effectValue}${unitOfMeasure})`;
 };
 
+const setDefaultEffect = () => {
+  document.querySelector('.img-upload__effect-level').classList.add('visually-hidden');
+  effectNameClass = 'effects__preview--none';
+  imagePreview.classList.add(effectNameClass);
+  imagePreview.removeAttribute('style');
+  scaleControl.value = '100%';
+};
+
 const onRadioEffectChecked = (evt) => {
   imagePreview.classList.remove(effectNameClass);
   const name = evt.target.value;
   effectSetting = effectsSetings.find((element) => element.name === name);
   if (name === 'none') {
-    document.querySelector('.img-upload__effect-level').classList.add('visually-hidden');
-    effectNameClass = 'effects__preview--none';
-    imagePreview.classList.add(effectNameClass);
-    imagePreview.removeAttribute('style');
-    scaleControl.value = '100%';
-  } else {
-    document.querySelector('.img-upload__effect-level').classList.remove('visually-hidden');
-    sliderElement.noUiSlider.updateOptions({
-      range: {
-        min: effectSetting.minValue,
-        max: effectSetting.maxValue,
-      },
-      start: effectSetting.startValue,
-      step: effectSetting.step,
-    });
-
-    document.querySelector('.img-upload__effect-level').classList.remove('visually-hidden');
-    effectNameClass = `'effects__preview--${name}'`;
-    imagePreview.classList.add(effectNameClass);
-
-    createEffectOnImage();
-
-    sliderElement.noUiSlider.on('update', createEffectOnImage);
+    setDefaultEffect();
+    return;
   }
-};
 
-const iamgeEffectManage = () => {
-  document.querySelectorAll('.effects__radio').forEach((effect) => effect.addEventListener('click', onRadioEffectChecked));
-};
+  document.querySelector('.img-upload__effect-level').classList.remove('visually-hidden');
+  sliderElement.noUiSlider.updateOptions({
+    range: {
+      min: effectSetting.minValue,
+      max: effectSetting.maxValue,
+    },
+    start: effectSetting.startValue,
+    step: effectSetting.step,
+  });
 
+  document.querySelector('.img-upload__effect-level').classList.remove('visually-hidden');
+  effectNameClass = `'effects__preview--${name}'`;
+  imagePreview.classList.add(effectNameClass);
+
+  createEffectOnImage();
+
+  sliderElement.noUiSlider.on('update', createEffectOnImage);
+};
 
 const onClickButtonScale = (evt) => {
   let scaleValue = parseInt(scaleControl.value, 10);
   if (evt.target.classList.contains('scale__control--smaller')) {
     if (scaleValue > 0) {
       scaleValue -= 25;
-    } else {
-      return null;
     }
   } else {
     if (scaleValue < 100) {
       scaleValue += 25;
-    } else {
-      return null;
     }
   }
 
@@ -135,11 +120,18 @@ const imageScaleManage = () => {
   document.querySelectorAll('.scale__control').forEach((button) => button.addEventListener('click', onClickButtonScale));
 };
 
-const createEffect = () => {
+const initImageEffect = () => {
   document.querySelector('.img-upload__effect-level').classList.add('visually-hidden');
-  createEffectSlider();
-  iamgeEffectManage();
+  noUiSlider.create(sliderElement, {
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+  });
+  document.querySelectorAll('.effects__radio').forEach((effect) => effect.addEventListener('click', onRadioEffectChecked));
   imageScaleManage();
 };
 
-export { createEffect };
+export { initImageEffect };
