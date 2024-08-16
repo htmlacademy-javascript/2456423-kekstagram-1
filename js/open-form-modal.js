@@ -1,5 +1,8 @@
 import { isKeyEscape } from './util.js';
 import { initImageEffect } from './init-image-effect.js';
+import { setDefaultEffect } from './init-image-effect.js';
+import { showAlertSendForm } from './show-alert.js';
+import { sendData } from './api.js';
 
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
 const HASH_TAGS_COUNT = 5;
@@ -54,19 +57,47 @@ function closeFormModal() {
   imgUploadOverlay.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('keydown', onKeyEscapeKeydown);
+  form.removeEventListener('submit', onSubmitUserForm);
 }
 
+const blockSubmitButton = () => {
+  uploadFile.disabled = true;
+};
+
+const unblockSubmitButton = () => {
+  uploadFile.disabled = false;
+};
+
+async function onSubmitUserForm(evt) {
+  try {
+    evt.preventDefault();
+    const isValid = pristine.validate();
+    if (isValid) {
+      const formData = new FormData(evt.target);
+      blockSubmitButton();
+      document.removeEventListener('keydown', onKeyEscapeKeydown);
+      await sendData(formData);
+      closeFormModal();
+      showAlertSendForm('success');
+      unblockSubmitButton();
+    }
+  } catch {
+    showAlertSendForm('error');
+    unblockSubmitButton();
+  }
+}
+
+const setUserFormSubmit = () => form.addEventListener('submit', onSubmitUserForm);
+
 const openFormModal = () => {
+  setDefaultEffect();
   imgUploadOverlay.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');
 
   document.addEventListener('keydown', onKeyEscapeKeydown);
   imgUploadCancel.addEventListener('click', closeFormModal);
 
-  form.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    pristine.validate();
-  });
+  setUserFormSubmit();
 };
 
 const createFormModal = () => {
@@ -74,5 +105,5 @@ const createFormModal = () => {
   initImageEffect();
 };
 
-export {createFormModal};
+export { createFormModal, onKeyEscapeKeydown };
 

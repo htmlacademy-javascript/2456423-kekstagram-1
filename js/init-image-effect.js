@@ -101,7 +101,7 @@ const onRadioEffectChecked = (evt) => {
 const onClickButtonScale = (evt) => {
   let scaleValue = parseInt(scaleControl.value, 10);
   if (evt.target.classList.contains('scale__control--smaller')) {
-    if (scaleValue > 0) {
+    if (scaleValue > 25) {
       scaleValue -= 25;
     }
   } else {
@@ -134,4 +134,4 @@ const initImageEffect = () => {
   imageScaleManage();
 };
 
-export { initImageEffect };
+export { initImageEffect, setDefaultEffect };
