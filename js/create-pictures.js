@@ -5,7 +5,6 @@ const createPictures = function(descriptions) {
   const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   const pictureListFragment = document.createDocumentFragment();
 
-
   descriptions.forEach((description) => {
     const picture = pictureTemplate.cloneNode(true);
     picture.querySelector('.picture__img').src = description.url;

@@ -1,7 +1,7 @@
-import { isKeyEscape } from './util.js';
+import { isEscapeKey } from './util.js';
 import { initImageEffect } from './init-image-effect.js';
 import { setDefaultEffect } from './init-image-effect.js';
-import { showAlertSendForm } from './show-alert.js';
+import { showDialog } from './dialogs.js';
 import { sendData } from './api.js';
 
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
@@ -10,10 +10,13 @@ const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
 
 const uploadFile = document.querySelector('#upload-file');
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');
+const imgUploadMessage = document.querySelector('#messages');
 const imgUploadCancel = document.querySelector('.img-upload__cancel');
 const form = document.querySelector('.img-upload__form');
 const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
+const successDialog = document.querySelector('#success');
+const errorDialog = document.querySelector('#error');
 
 
 const pristine = new Pristine(form, {
@@ -45,7 +48,7 @@ pristine.addValidator(
 const isTextfieldFocused = () => document.activeElement === hashtagField || document.activeElement === commentField;
 
 const onKeyEscapeKeydown = (evt) => {
-  if (isKeyEscape(evt) && !isTextfieldFocused()) {
+  if (isEscapeKey(evt) && !isTextfieldFocused()) {
     evt.preventDefault();
     closeFormModal();
   }
@@ -60,12 +63,8 @@ function closeFormModal() {
   form.removeEventListener('submit', onSubmitUserForm);
 }
 
-const blockSubmitButton = () => {
-  uploadFile.disabled = true;
-};
-
-const unblockSubmitButton = () => {
-  uploadFile.disabled = false;
+const blockSubmitButton = (disabledValue) => {
+  uploadFile.disabled = disabledValue;
 };
 
 async function onSubmitUserForm(evt) {
@@ -74,20 +73,20 @@ async function onSubmitUserForm(evt) {
     const isValid = pristine.validate();
     if (isValid) {
       const formData = new FormData(evt.target);
-      blockSubmitButton();
+      blockSubmitButton(true);
+      document.body.append(imgUploadMessage.content.cloneNode(true));
       document.removeEventListener('keydown', onKeyEscapeKeydown);
       await sendData(formData);
       closeFormModal();
-      showAlertSendForm('success');
-      unblockSubmitButton();
+      showDialog(successDialog);
     }
-  } catch {
-    showAlertSendForm('error');
-    unblockSubmitButton();
+  } catch(err) {
+    showDialog(errorDialog);
+  } finally {
+    blockSubmitButton(false);
+    document.querySelector('.img-upload__message').remove();
   }
 }
-
-const setUserFormSubmit = () => form.addEventListener('submit', onSubmitUserForm);
 
 const openFormModal = () => {
   setDefaultEffect();
@@ -97,13 +96,12 @@ const openFormModal = () => {
   document.addEventListener('keydown', onKeyEscapeKeydown);
   imgUploadCancel.addEventListener('click', closeFormModal);
 
-  setUserFormSubmit();
+  form.addEventListener('submit', onSubmitUserForm);
 };
 
-const createFormModal = () => {
+const initFormModal = () => {
   uploadFile.addEventListener('change', openFormModal);
   initImageEffect();
 };
 
-export { createFormModal, onKeyEscapeKeydown };
-
+export { initFormModal, onKeyEscapeKeydown };

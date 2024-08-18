@@ -1,4 +1,4 @@
-import {isKeyEscape} from './util.js';
+import { isEscapeKey } from './util.js';
 
 const COMMENTS_NUMBER = 5;
 const bigPicture = document.querySelector('.big-picture');
@@ -28,7 +28,7 @@ const createComments = (comments) => {
 
 const onKeyEscapeKeydown = (evt) => {
   evt.preventDefault();
-  if(isKeyEscape(evt)) {
+  if(isEscapeKey(evt)) {
     handleCloseButtonClick();
   }
 };
@@ -70,6 +70,5 @@ const openPictureModal = (description) => {
   bigPictureCancel.addEventListener('click', handleCloseButtonClick);
   bigPictureCommentsLoader.addEventListener('click', handleCommentsLoaderClick) ;
 };
-
 
 export {openPictureModal};

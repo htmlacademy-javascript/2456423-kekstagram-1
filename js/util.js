@@ -21,6 +21,6 @@ const getRandomUniqInteger = () => {
   };
 };
 
-const isKeyEscape = (evt) => evt.key === 'Escape';
+const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export {getRandomInteger, getRandomUniqInteger, isKeyEscape};
+export {getRandomInteger, getRandomUniqInteger, isEscapeKey};

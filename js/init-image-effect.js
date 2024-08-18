@@ -46,6 +46,9 @@ const effectsSetings = [
   }
 ];
 
+const MIN_SCALE_VALUE = 25;
+const MAX_SCALE_VALUE = 100;
+
 const sliderElement = document.querySelector('.effect-level__slider');
 const imagePreview = document.querySelector('.img-upload__preview');
 const sliderValue = document.querySelector('.effect-level__value');
@@ -101,11 +104,11 @@ const onRadioEffectChecked = (evt) => {
 const onClickButtonScale = (evt) => {
   let scaleValue = parseInt(scaleControl.value, 10);
   if (evt.target.classList.contains('scale__control--smaller')) {
-    if (scaleValue > 25) {
+    if (scaleValue > MIN_SCALE_VALUE) {
       scaleValue -= 25;
     }
   } else {
-    if (scaleValue < 100) {
+    if (scaleValue < MAX_SCALE_VALUE) {
       scaleValue += 25;
     }
   }
