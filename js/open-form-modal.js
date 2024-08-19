@@ -10,14 +10,13 @@ const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
 
 const uploadFile = document.querySelector('#upload-file');
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');
-const imgUploadMessage = document.querySelector('#messages');
+const imgUploadSubmit = document.querySelector('.img-upload__submit');
 const imgUploadCancel = document.querySelector('.img-upload__cancel');
 const form = document.querySelector('.img-upload__form');
 const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
 const successDialog = document.querySelector('#success');
 const errorDialog = document.querySelector('#error');
-
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -59,12 +58,10 @@ function closeFormModal() {
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('keydown', onKeyEscapeKeydown);
-  form.removeEventListener('submit', onSubmitUserForm);
 }
 
-const blockSubmitButton = (disabledValue) => {
-  uploadFile.disabled = disabledValue;
+const blockSubmitButton = (disabled) => {
+  uploadFile.disabled = disabled;
 };
 
 async function onSubmitUserForm(evt) {
@@ -74,8 +71,7 @@ async function onSubmitUserForm(evt) {
     if (isValid) {
       const formData = new FormData(evt.target);
       blockSubmitButton(true);
-      document.body.append(imgUploadMessage.content.cloneNode(true));
-      document.removeEventListener('keydown', onKeyEscapeKeydown);
+      imgUploadSubmit.textContent = 'Загружаем...';
       await sendData(formData);
       closeFormModal();
       showDialog(successDialog);
@@ -84,7 +80,7 @@ async function onSubmitUserForm(evt) {
     showDialog(errorDialog);
   } finally {
     blockSubmitButton(false);
-    document.querySelector('.img-upload__message').remove();
+    imgUploadSubmit.textContent = 'Опубликовать';
   }
 }
 
@@ -95,13 +91,12 @@ const openFormModal = () => {
 
   document.addEventListener('keydown', onKeyEscapeKeydown);
   imgUploadCancel.addEventListener('click', closeFormModal);
-
-  form.addEventListener('submit', onSubmitUserForm);
 };
 
 const initFormModal = () => {
   uploadFile.addEventListener('change', openFormModal);
   initImageEffect();
+  form.addEventListener('submit', onSubmitUserForm);
 };
 
-export { initFormModal, onKeyEscapeKeydown };
+export { initFormModal };

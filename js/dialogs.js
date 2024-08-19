@@ -1,46 +1,40 @@
 import { isEscapeKey } from './util.js';
-import { onKeyEscapeKeydown } from './open-form-modal.js';
-
-const errorUsersImages = document.querySelector('#error-users-images');
 
 const ALERT_SHOW_TIME = 5000;
 
-let dialogType;
+const alert = document.querySelector('#alert');
+
+let activeDialog;
 
 const onDocumentKeydown = (evt) => {
   evt.preventDefault();
   if (isEscapeKey(evt)) {
+    evt.stopPropagation();
     closeDialog();
   }
 };
 
 function closeDialog() {
-  document.querySelector(`.${dialogType}`).remove();
-  document.removeEventListener('keydown', onDocumentKeydown);
-  document.addEventListener('keydown', onKeyEscapeKeydown);
+  activeDialog?.remove();
+  document.removeEventListener('keydown', onDocumentKeydown, { capture: true });
 }
 
-const showDialog = (templateDialog) => {
-  const dialog = templateDialog.content.cloneNode(true);
-
-  const dialogFragment = document.createDocumentFragment();
-  dialogFragment.append(dialog);
-
-  dialogType = dialogFragment.querySelector('[type = "button"]').getAttribute('data-message-type');
-
-  document.body.append(dialogFragment);
-  document.querySelector(`.${dialogType}`).addEventListener('click', closeDialog);
-  document.addEventListener('keydown', onDocumentKeydown);
+const showDialog = (dialogTemplate) => {
+  activeDialog = dialogTemplate.content.querySelector('section').cloneNode(true);
+  document.body.append(activeDialog);
+  activeDialog.addEventListener('click', () => closeDialog());
+  activeDialog.querySelector('[data-close-button]').addEventListener('click', () => closeDialog());
+  document.addEventListener('keydown', onDocumentKeydown, { capture: true });
 };
 
 const showAlert = (message) => {
-  const alertContainer = errorUsersImages.content.cloneNode(true);
+  const alertContainer = alert.content.querySelector('.alert').cloneNode(true);
 
   document.body.append(alertContainer);
-  document.querySelector('.error-users-images').innerHTML = message;
+  alertContainer.querySelector('.allert__message').innerHTML = message;
 
   setTimeout(() => {
-    document.querySelector('.error-users-images').remove();
+    alertContainer.remove();
   }, ALERT_SHOW_TIME);
 };
 
