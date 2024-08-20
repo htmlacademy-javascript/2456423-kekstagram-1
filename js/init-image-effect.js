@@ -66,7 +66,7 @@ const createEffectOnImage = () => {
   imagePreview.style.filter = `${nameEffect}(${effectValue}${unitOfMeasure})`;
 };
 
-const setDefaultEffect = () => {
+const resetEffects = () => {
   document.querySelector('.img-upload__effect-level').classList.add('visually-hidden');
   effectNameClass = 'effects__preview--none';
   imagePreview.classList.add(effectNameClass);
@@ -79,7 +79,7 @@ const onRadioEffectChecked = (evt) => {
   const name = evt.target.value;
   effectSetting = effectsSetings.find((element) => element.name === name);
   if (name === 'none') {
-    setDefaultEffect();
+    resetEffects();
     return;
   }
 
@@ -136,4 +136,4 @@ const initImageEffect = () => {
   imageScaleManage();
 };
 
-export { initImageEffect, setDefaultEffect };
+export { initImageEffect, resetEffects };

@@ -3,7 +3,7 @@ const ERROR_MESSAGE = 'Не удалось загрузить данные. По
 
 const Route = {
   GET_DATA: '/data',
-  SEND_DATA: '/',
+  SEND_DATA: '/1',
 };
 
 const Method = {

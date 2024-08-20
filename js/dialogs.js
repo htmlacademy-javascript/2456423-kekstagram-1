@@ -2,7 +2,7 @@ import { isEscapeKey } from './util.js';
 
 const ALERT_SHOW_TIME = 5000;
 
-const alert = document.querySelector('#alert');
+const alert = document.querySelector('#alert').content.querySelector('.alert');
 
 let activeDialog;
 
@@ -16,19 +16,20 @@ const onDocumentKeydown = (evt) => {
 
 function closeDialog() {
   activeDialog?.remove();
-  document.removeEventListener('keydown', onDocumentKeydown, { capture: true });
+  activeDialog = null;
+  document.removeEventListener('keydown', onDocumentKeydown, true);
 }
 
 const showDialog = (dialogTemplate) => {
-  activeDialog = dialogTemplate.content.querySelector('section').cloneNode(true);
+  activeDialog = dialogTemplate.cloneNode(true);
   document.body.append(activeDialog);
   activeDialog.addEventListener('click', () => closeDialog());
-  activeDialog.querySelector('[data-close-button]').addEventListener('click', () => closeDialog());
-  document.addEventListener('keydown', onDocumentKeydown, { capture: true });
+  activeDialog.querySelector('[data-close-button]')?.addEventListener('click', () => closeDialog());
+  document.addEventListener('keydown', onDocumentKeydown, true);
 };
 
 const showAlert = (message) => {
-  const alertContainer = alert.content.querySelector('.alert').cloneNode(true);
+  const alertContainer = alert.cloneNode(true);
 
   document.body.append(alertContainer);
   alertContainer.querySelector('.allert__message').innerHTML = message;

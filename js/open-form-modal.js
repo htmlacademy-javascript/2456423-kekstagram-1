@@ -1,12 +1,17 @@
 import { isEscapeKey } from './util.js';
 import { initImageEffect } from './init-image-effect.js';
-import { setDefaultEffect } from './init-image-effect.js';
+import { resetEffects } from './init-image-effect.js';
 import { showDialog } from './dialogs.js';
 import { sendData } from './api.js';
 
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
 const HASH_TAGS_COUNT = 5;
 const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
+
+const UploadButtonText = {
+  DISABLED: 'Загружаем...',
+  AVAILABLE: 'Опубликовать',
+};
 
 const uploadFile = document.querySelector('#upload-file');
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');
@@ -15,8 +20,8 @@ const imgUploadCancel = document.querySelector('.img-upload__cancel');
 const form = document.querySelector('.img-upload__form');
 const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
-const successDialog = document.querySelector('#success');
-const errorDialog = document.querySelector('#error');
+const successDialog = document.querySelector('#success').content.querySelector('section');
+const errorDialog = document.querySelector('#error').content.querySelector('section');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -60,8 +65,9 @@ function closeFormModal() {
   document.querySelector('body').classList.remove('modal-open');
 }
 
-const blockSubmitButton = (disabled) => {
+const toggleSubmitButton = (disabled) => {
   uploadFile.disabled = disabled;
+  imgUploadSubmit.textContent = disabled ? UploadButtonText.DISABLED : UploadButtonText.AVAILABLE;
 };
 
 async function onSubmitUserForm(evt) {
@@ -70,8 +76,7 @@ async function onSubmitUserForm(evt) {
     const isValid = pristine.validate();
     if (isValid) {
       const formData = new FormData(evt.target);
-      blockSubmitButton(true);
-      imgUploadSubmit.textContent = 'Загружаем...';
+      toggleSubmitButton(true);
       await sendData(formData);
       closeFormModal();
       showDialog(successDialog);
@@ -79,13 +84,12 @@ async function onSubmitUserForm(evt) {
   } catch(err) {
     showDialog(errorDialog);
   } finally {
-    blockSubmitButton(false);
-    imgUploadSubmit.textContent = 'Опубликовать';
+    toggleSubmitButton(false);
   }
 }
 
 const openFormModal = () => {
-  setDefaultEffect();
+  resetEffects();
   imgUploadOverlay.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');
 
