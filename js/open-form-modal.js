@@ -1,17 +1,27 @@
-import { isKeyEscape } from './util.js';
+import { isEscapeKey } from './util.js';
 import { initImageEffect } from './init-image-effect.js';
+import { resetEffects } from './init-image-effect.js';
+import { showDialog } from './dialogs.js';
+import { sendData } from './api.js';
 
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
 const HASH_TAGS_COUNT = 5;
 const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
 
+const UploadButtonText = {
+  DISABLED: 'Загружаем...',
+  AVAILABLE: 'Опубликовать',
+};
+
 const uploadFile = document.querySelector('#upload-file');
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');
+const imgUploadSubmit = document.querySelector('.img-upload__submit');
 const imgUploadCancel = document.querySelector('.img-upload__cancel');
 const form = document.querySelector('.img-upload__form');
 const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
-
+const successDialog = document.querySelector('#success').content.querySelector('section');
+const errorDialog = document.querySelector('#error').content.querySelector('section');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -42,7 +52,7 @@ pristine.addValidator(
 const isTextfieldFocused = () => document.activeElement === hashtagField || document.activeElement === commentField;
 
 const onKeyEscapeKeydown = (evt) => {
-  if (isKeyEscape(evt) && !isTextfieldFocused()) {
+  if (isEscapeKey(evt) && !isTextfieldFocused()) {
     evt.preventDefault();
     closeFormModal();
   }
@@ -53,26 +63,44 @@ function closeFormModal() {
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('keydown', onKeyEscapeKeydown);
+}
+
+const toggleSubmitButton = (disabled) => {
+  uploadFile.disabled = disabled;
+  imgUploadSubmit.textContent = disabled ? UploadButtonText.DISABLED : UploadButtonText.AVAILABLE;
+};
+
+async function onSubmitUserForm(evt) {
+  try {
+    evt.preventDefault();
+    const isValid = pristine.validate();
+    if (isValid) {
+      const formData = new FormData(evt.target);
+      toggleSubmitButton(true);
+      await sendData(formData);
+      closeFormModal();
+      showDialog(successDialog);
+    }
+  } catch(err) {
+    showDialog(errorDialog);
+  } finally {
+    toggleSubmitButton(false);
+  }
 }
 
 const openFormModal = () => {
+  resetEffects();
   imgUploadOverlay.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');
 
   document.addEventListener('keydown', onKeyEscapeKeydown);
   imgUploadCancel.addEventListener('click', closeFormModal);
-
-  form.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    pristine.validate();
-  });
 };
 
-const createFormModal = () => {
+const initFormModal = () => {
   uploadFile.addEventListener('change', openFormModal);
   initImageEffect();
+  form.addEventListener('submit', onSubmitUserForm);
 };
 
-export {createFormModal};
-
+export { initFormModal };

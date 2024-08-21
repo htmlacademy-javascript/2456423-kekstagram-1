@@ -214,7 +214,7 @@
     <section class="error">
       <div class="error__inner">
         <h2 class="error__title">Ошибка загрузки файла</h2>
-        <button type="button" class="error__button">Попробовать ещё раз</button>
+        <button type="button" class="error__button" data-close-button>Попробовать ещё раз</button>
       </div>
     </section>
   </template>
@@ -224,7 +224,7 @@
     <section class="success">
       <div class="success__inner">
         <h2 class="success__title">Изображение успешно загружено</h2>
-        <button type="button" class="success__button">Круто!</button>
+        <button type="button" class="success__button" data-close-button>Круто!</button>
       </div>
     </section>
   </template>
@@ -232,6 +232,13 @@
   <!-- Экран загрузки изображения -->
   <template id="messages">
     <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
+  </template>
+
+  <!-- Блок сообщения об ошибке загрузки изображений других пользователей -->
+  <template id="alert">
+    <section class="alert">
+      <div class="alert__message"></div>
+    </section>
   </template>
 
   <script src="vendor/nouislider/nouislider.js"></script>

@@ -46,6 +46,10 @@ const effectsSetings = [
   }
 ];
 
+const MIN_SCALE_VALUE = 25;
+const MAX_SCALE_VALUE = 100;
+const SCALE_STEP = 25;
+
 const sliderElement = document.querySelector('.effect-level__slider');
 const imagePreview = document.querySelector('.img-upload__preview');
 const sliderValue = document.querySelector('.effect-level__value');
@@ -62,7 +66,7 @@ const createEffectOnImage = () => {
   imagePreview.style.filter = `${nameEffect}(${effectValue}${unitOfMeasure})`;
 };
 
-const setDefaultEffect = () => {
+const resetEffects = () => {
   document.querySelector('.img-upload__effect-level').classList.add('visually-hidden');
   effectNameClass = 'effects__preview--none';
   imagePreview.classList.add(effectNameClass);
@@ -75,7 +79,7 @@ const onRadioEffectChecked = (evt) => {
   const name = evt.target.value;
   effectSetting = effectsSetings.find((element) => element.name === name);
   if (name === 'none') {
-    setDefaultEffect();
+    resetEffects();
     return;
   }
 
@@ -98,16 +102,18 @@ const onRadioEffectChecked = (evt) => {
   sliderElement.noUiSlider.on('update', createEffectOnImage);
 };
 
+const activeDecreaseScaleButton = ({target}, scaleValue) => (target.classList.contains('scale__control--smaller') && scaleValue > MIN_SCALE_VALUE);
+
+
+const activeIncreaseScaleButton = ({target}, scaleValue) => (target.classList.contains('scale__control--bigger') && scaleValue < MAX_SCALE_VALUE);
+
 const onClickButtonScale = (evt) => {
   let scaleValue = parseInt(scaleControl.value, 10);
-  if (evt.target.classList.contains('scale__control--smaller')) {
-    if (scaleValue > 0) {
-      scaleValue -= 25;
-    }
-  } else {
-    if (scaleValue < 100) {
-      scaleValue += 25;
-    }
+
+  if(activeDecreaseScaleButton(evt, scaleValue)) {
+    scaleValue -= SCALE_STEP;
+  } else if(activeIncreaseScaleButton(evt, scaleValue)) {
+    scaleValue += SCALE_STEP;
   }
 
   scaleControl.value = `${scaleValue}%`;
@@ -134,4 +140,4 @@ const initImageEffect = () => {
   imageScaleManage();
 };
 
-export { initImageEffect };
+export { initImageEffect, resetEffects };

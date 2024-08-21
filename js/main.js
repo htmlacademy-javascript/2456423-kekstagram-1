@@ -1,8 +1,13 @@
-import {createDescription} from './data.js';
-import {createPictures} from './create-pictures.js';
-import{createFormModal} from './open-form-modal.js';
+import { createPictures } from './create-pictures.js';
+import { initFormModal } from './open-form-modal.js';
+import { getData } from './api.js';
+import { showAlert } from './dialogs.js';
 
-const descriptions = createDescription();
-createPictures(descriptions);
+initFormModal();
 
-createFormModal();
+try {
+  const descriptions = await getData();
+  createPictures(descriptions);
+} catch(err) {
+  showAlert(err.message);
+}
