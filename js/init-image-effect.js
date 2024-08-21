@@ -102,14 +102,18 @@ const onRadioEffectChecked = (evt) => {
   sliderElement.noUiSlider.on('update', createEffectOnImage);
 };
 
+const activeDecreaseScaleButton = ({target}, scaleValue) => (target.classList.contains('scale__control--smaller') && scaleValue > MIN_SCALE_VALUE);
+
+
+const activeIncreaseScaleButton = ({target}, scaleValue) => (target.classList.contains('scale__control--bigger') && scaleValue < MAX_SCALE_VALUE);
+
 const onClickButtonScale = (evt) => {
   let scaleValue = parseInt(scaleControl.value, 10);
-  if (evt.target.classList.contains('scale__control--smaller') && scaleValue > MIN_SCALE_VALUE) {
+
+  if(activeDecreaseScaleButton(evt, scaleValue)) {
     scaleValue -= SCALE_STEP;
-  } else {
-    if (evt.target.classList.contains('scale__control--bigger') && scaleValue < MAX_SCALE_VALUE) {
-      scaleValue += SCALE_STEP;
-    }
+  } else if(activeIncreaseScaleButton(evt, scaleValue)) {
+    scaleValue += SCALE_STEP;
   }
 
   scaleControl.value = `${scaleValue}%`;

@@ -11,7 +11,7 @@ const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
 const UploadButtonText = {
   DISABLED: 'Загружаем...',
   AVAILABLE: 'Опубликовать',
-};
+}
 
 const uploadFile = document.querySelector('#upload-file');
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');
@@ -77,6 +77,7 @@ async function onSubmitUserForm(evt) {
     if (isValid) {
       const formData = new FormData(evt.target);
       toggleSubmitButton(true);
+      /*imgUploadSubmit.textContent = 'Загружаем...';*/
       await sendData(formData);
       closeFormModal();
       showDialog(successDialog);
@@ -85,6 +86,7 @@ async function onSubmitUserForm(evt) {
     showDialog(errorDialog);
   } finally {
     toggleSubmitButton(false);
+    /*imgUploadSubmit.textContent = 'Опубликовать';*/
   }
 }
 

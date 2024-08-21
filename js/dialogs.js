@@ -32,7 +32,7 @@ const showAlert = (message) => {
   const alertContainer = alert.cloneNode(true);
 
   document.body.append(alertContainer);
-  alertContainer.querySelector('.allert__message').innerHTML = message;
+  alertContainer.querySelector('.alert__message').innerHTML = message;
 
   setTimeout(() => {
     alertContainer.remove();
