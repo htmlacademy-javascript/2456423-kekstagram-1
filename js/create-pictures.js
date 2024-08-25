@@ -1,6 +1,6 @@
 import{openPictureModal} from './open-picture-modal.js';
 
-const createPictures = function(descriptions) {
+const createPictures = (descriptions) => {
   const picturesContainer = document.querySelector('.pictures');
   const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   const pictureListFragment = document.createDocumentFragment();
