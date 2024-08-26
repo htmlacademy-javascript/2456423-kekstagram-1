@@ -108,9 +108,15 @@ const onClickButtonScale = ({target}) => {
   const downScale = target.classList.contains('scale__control--smaller');
   const upScale = target.classList.contains('scale__control--bigger');
 
-  if(downScale && scaleValue > MIN_SCALE_VALUE) {
+  if(
+    downScale &&
+    scaleValue > MIN_SCALE_VALUE
+  ) {
     scaleValue -= SCALE_STEP;
-  } else if(upScale && scaleValue < MAX_SCALE_VALUE) {
+  } else if(
+    upScale &&
+    scaleValue < MAX_SCALE_VALUE
+  ) {
     scaleValue += SCALE_STEP;
   }
 

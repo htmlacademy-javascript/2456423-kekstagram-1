@@ -53,6 +53,7 @@ function handleCloseButtonClick() {
 }
 
 const openPictureModal = (description) => {
+  console.log(description);
   rawDescription = description;
   bigPicture.querySelector('img').src = description.url;
   bigPicture.querySelector('.likes-count').textContent = description.likes;
