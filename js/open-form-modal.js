@@ -1,6 +1,6 @@
 import { isEscapeKey } from './util.js';
-import { initImageEffect } from './init-image-effect.js';
-import { resetEffects } from './init-image-effect.js';
+import { initImageEffect } from './image-effects.js';
+import { resetEffects } from './image-effects.js';
 import { showDialog } from './dialogs.js';
 import { sendData } from './api.js';
 

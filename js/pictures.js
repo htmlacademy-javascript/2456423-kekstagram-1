@@ -1,23 +1,27 @@
 import{ openPictureModal } from './open-picture-modal.js';
+import{ initFilters } from './filters.js';
 
-let pictures;
+let pictures = null;
 
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-const renderPicture = (picture) => {
+const createPicture = (picture) => {
   const pictureElement = pictureTemplate.cloneNode(true);
+
   pictureElement.querySelector('.picture__img').src = picture.url;
   pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
   pictureElement.querySelector('.picture__likes').textContent = picture.likes;
   pictureElement.dataset.pictureId = picture.id;
+
   return pictureElement;
 };
 
-const onClickPicturesContainer = ({target}) => {
-  if(target.classList.contains('picture__img')){
-    const pictureId = target.closest('.picture').getAttribute('data-picture-id');
-    const galleryRenderElement = pictures.find((element) => element.id === Number(pictureId));
+const onPicturesContainerClick = ({target}) => {
+  const pictureId = target.closest('.picture').dataset.pictureId;
+  const galleryRenderElement = pictures.find((element) => element.id === Number(pictureId));
+
+  if(pictureId && galleryRenderElement) {
     openPictureModal(galleryRenderElement);
   }
 };
@@ -25,25 +29,33 @@ const onClickPicturesContainer = ({target}) => {
 const removePictures = () => {
   picturesContainer.querySelectorAll('.picture').forEach((picture) => {
     picture.remove();
-    picturesContainer.removeEventListener('click', onClickPicturesContainer);
   });
 };
 
-const renderPictures = (gallary) => {
-  pictures = gallary;
+function renderPictures(gallary) {
 
   removePictures();
 
-  const pictureListFragment = document.createDocumentFragment();
+  const fragment = document.createDocumentFragment();
 
   gallary.forEach((picture) => {
-    pictureListFragment.append(renderPicture(picture));
+    fragment.append(createPicture(picture));
   });
 
-  picturesContainer.append(pictureListFragment);
+  picturesContainer.append(fragment);
 
-  picturesContainer.addEventListener('click', onClickPicturesContainer);
+  picturesContainer.addEventListener('click', onPicturesContainerClick);
 
+}
+
+const getPictures = () => pictures;
+
+const initPictures = (gallary) => {
+  pictures = gallary;
+
+  renderPictures(pictures);
+
+  initFilters();
 };
 
-export{renderPictures};
+export{renderPictures, initPictures, getPictures};
