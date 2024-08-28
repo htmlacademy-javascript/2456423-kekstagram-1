@@ -1,13 +1,15 @@
-import { createPictures } from './create-pictures.js';
-import { initFormModal } from './open-form-modal.js';
+import { initFormModal } from './form-modal.js';
 import { getData } from './api.js';
 import { showAlert } from './dialogs.js';
+import { initGallery } from './pictures.js';
+import{ initFilters } from './filters.js';
 
 initFormModal();
 
 try {
-  const descriptions = await getData();
-  createPictures(descriptions);
+  const data = await getData();
+  initGallery(data);
+  initFilters();
 } catch(err) {
   showAlert(err.message);
 }
