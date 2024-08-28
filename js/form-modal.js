@@ -1,4 +1,4 @@
-import { isEscapeKey } from './util.js';
+import { isEscapeKey } from './utils.js';
 import { initImageEffect } from './image-effects.js';
 import { resetEffects } from './image-effects.js';
 import { showDialog } from './dialogs.js';

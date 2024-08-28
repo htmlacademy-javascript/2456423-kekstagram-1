@@ -16,13 +16,11 @@ const createPicture = (picture) => {
   return pictureElement;
 };
 
-const onGallaryClick = ({target}) => {
+const onGalleryClick = ({target}) => {
   const pictureId = target.closest('.picture')?.dataset.pictureId;
-  const pictureData = pictures[pictureId];
+  const pictureData = pictures.find((element) => element.id === Number(pictureId));
 
-  if(pictureId &&
-    pictureData
-  ) {
+  if(pictureData) {
     openPictureModal(pictureData);
   }
 };
@@ -33,23 +31,23 @@ const removePictures = () => {
   });
 };
 
-const renderGallary = (gallary) => {
+const renderGallery = (gallery) => {
   removePictures();
 
   const fragment = document.createDocumentFragment();
 
-  gallary.forEach((picture) => {
+  gallery.forEach((picture) => {
     fragment.append(createPicture(picture));
   });
   picturesContainer.append(fragment);
-  picturesContainer.addEventListener('click', onGallaryClick);
+  picturesContainer.addEventListener('click', onGalleryClick);
 };
 
 const getPictures = () => pictures;
 
-const initGallary = (gallary) => {
-  pictures = gallary;
-  renderGallary(pictures);
+const initGallery = (gallery) => {
+  pictures = gallery;
+  renderGallery(pictures);
 };
 
-export{renderGallary, initGallary, getPictures};
+export{renderGallery, initGallery, getPictures};
