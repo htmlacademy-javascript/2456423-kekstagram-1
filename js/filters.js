@@ -1,5 +1,5 @@
 import { debounce } from './util.js';
-import { renderPictures, getPictures } from './pictures.js';
+import { renderGallary, getPictures } from './pictures.js';
 
 const DEBOUNCE_DELAY = 500;
 const RANDOM_IMAGE_NUMBER = 10;
@@ -11,46 +11,33 @@ const filtersCondition = {
 
 const imgFilters = document.querySelector('.img-filters');
 
-const presetFilters = () => {
-  imgFilters.querySelectorAll('.img-filters__button').forEach((imgFilter) => {
-    if (imgFilter.classList.contains('img-filters__button--active')) {
-      imgFilter.classList.remove('img-filters__button--active');
-    }
-  });
-};
+const debounceRenderGallary = debounce(renderGallary, DEBOUNCE_DELAY);
 
-const debounceRenderPictures = debounce(renderPictures, DEBOUNCE_DELAY);
+const getRandomPictures = (pictures) => pictures.toSorted(() => Math.random() - 0.5).slice(0, RANDOM_IMAGE_NUMBER);
 
-const getRandomPictures = () => getPictures().toSorted(() => Math.random() - 0.5).slice(0, RANDOM_IMAGE_NUMBER);
-
-const getDiscussedPictures = () => getPictures().toSorted((descriptionA, descriptionB) => descriptionB.likes - descriptionA.likes);
+const getDiscussedPictures = (pictures) => pictures.toSorted((descriptionA, descriptionB) => descriptionB.likes - descriptionA.likes);
 
 const getSortedPictures = (filterId) => {
-  let picturesTempStorage = [];
+  const pictures = getPictures();
 
   switch (filterId) {
     case filtersCondition.RANDOM:
-      picturesTempStorage = getRandomPictures();
-      break;
+      return getRandomPictures(pictures);
     case filtersCondition.DISCUSSED:
-      picturesTempStorage = getDiscussedPictures();
-      break;
+      return getDiscussedPictures(pictures);
     default:
-      picturesTempStorage = getPictures();
+      return pictures;
   }
-
-  return picturesTempStorage;
 };
 
 const onImgFiltersClick = (evt) => {
   const filterId = evt.target.id;
 
-  if(filterId) {
-    presetFilters();
-
+  if (filterId) {
+    imgFilters.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
     evt.target.classList.add('img-filters__button--active');
 
-    debounceRenderPictures(getSortedPictures(filterId));
+    debounceRenderGallary(getSortedPictures(filterId));
   }
 };
 

@@ -1,7 +1,6 @@
-import{ openPictureModal } from './open-picture-modal.js';
-import{ initFilters } from './filters.js';
+import{ openPictureModal } from './picture-modal.js';
 
-let pictures = null;
+let pictures = [];
 
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
@@ -17,12 +16,14 @@ const createPicture = (picture) => {
   return pictureElement;
 };
 
-const onPicturesContainerClick = ({target}) => {
-  const pictureId = target.closest('.picture').dataset.pictureId;
-  const galleryRenderElement = pictures.find((element) => element.id === Number(pictureId));
+const onGallaryClick = ({target}) => {
+  const pictureId = target.closest('.picture')?.dataset.pictureId;
+  const pictureData = pictures[pictureId];
 
-  if(pictureId && galleryRenderElement) {
-    openPictureModal(galleryRenderElement);
+  if(pictureId &&
+    pictureData
+  ) {
+    openPictureModal(pictureData);
   }
 };
 
@@ -32,8 +33,7 @@ const removePictures = () => {
   });
 };
 
-function renderPictures(gallary) {
-
+const renderGallary = (gallary) => {
   removePictures();
 
   const fragment = document.createDocumentFragment();
@@ -41,21 +41,15 @@ function renderPictures(gallary) {
   gallary.forEach((picture) => {
     fragment.append(createPicture(picture));
   });
-
   picturesContainer.append(fragment);
-
-  picturesContainer.addEventListener('click', onPicturesContainerClick);
-
-}
+  picturesContainer.addEventListener('click', onGallaryClick);
+};
 
 const getPictures = () => pictures;
 
-const initPictures = (gallary) => {
+const initGallary = (gallary) => {
   pictures = gallary;
-
-  renderPictures(pictures);
-
-  initFilters();
+  renderGallary(pictures);
 };
 
-export{renderPictures, initPictures, getPictures};
+export{renderGallary, initGallary, getPictures};
