@@ -61,6 +61,7 @@ let effectNameClass;
 const createEffectOnImage = () => {
   const nameEffect = effectSetting.nameEffect;
   const unitOfMeasure = effectSetting.unitOfMeasure;
+
   const effectValue = Number.isInteger(+sliderElement.noUiSlider.get()) ? +sliderElement.noUiSlider.get() : (+sliderElement.noUiSlider.get()).toFixed(1);
   sliderValue.value = effectValue;
   imagePreview.style.filter = `${nameEffect}(${effectValue}${unitOfMeasure})`;
@@ -105,12 +106,12 @@ const onRadioEffectChecked = (evt) => {
 const onClickButtonScale = ({target}) => {
   let scaleValue = parseInt(scaleControl.value, 10);
 
-  const downScale = target.classList.contains('scale__control--smaller');
-  const upScale = target.classList.contains('scale__control--bigger');
+  const scaleDown = target.classList.contains('scale__control--smaller');
+  const scaleUp = target.classList.contains('scale__control--bigger');
 
-  if(downScale && scaleValue > MIN_SCALE_VALUE) {
+  if (scaleDown && scaleValue > MIN_SCALE_VALUE) {
     scaleValue -= SCALE_STEP;
-  } else if(upScale && scaleValue < MAX_SCALE_VALUE) {
+  } else if (scaleUp && scaleValue < MAX_SCALE_VALUE) {
     scaleValue += SCALE_STEP;
   }
 

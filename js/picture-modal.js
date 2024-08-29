@@ -7,10 +7,10 @@ const bigPictureCommentsElement = bigPicture.querySelector('.social__comments');
 const bigPictureCommentsLoader = bigPicture.querySelector('.social__comments-loader');
 const socialCommentsCount = bigPicture.querySelector('.social__comment-count');
 
-let commentTemplate;
+let commentTemplate = null;
 
 let renderedCommentsCount = 0;
-let rawDescription;
+let rawDescription = null;
 
 const createComments = (comments) => {
   const fragment = document.createDocumentFragment();
@@ -28,7 +28,7 @@ const createComments = (comments) => {
 
 const onKeyEscapeKeydown = (evt) => {
   evt.preventDefault();
-  if(isEscapeKey(evt)) {
+  if (isEscapeKey(evt)) {
     handleCloseButtonClick();
   }
 };

@@ -8,6 +8,7 @@ initFormModal();
 
 try {
   const data = await getData();
+
   initGallery(data);
   initFilters();
 } catch(err) {

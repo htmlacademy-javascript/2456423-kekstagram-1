@@ -3,6 +3,11 @@ import { initImageEffect } from './image-effects.js';
 import { resetEffects } from './image-effects.js';
 import { showDialog } from './dialogs.js';
 import { sendData } from './api.js';
+import { loadUserPicture } from './user-picture.js';
+
+const preview = document.querySelector('.img-upload__preview img');
+
+let defaultPreviewImage = null;
 
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
 const HASH_TAGS_COUNT = 5;
@@ -59,6 +64,7 @@ const onKeyEscapeKeydown = (evt) => {
 };
 
 function closeFormModal() {
+  preview.src = defaultPreviewImage;
   form.reset();
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
@@ -76,6 +82,7 @@ async function onSubmitUserForm(evt) {
     const isValid = pristine.validate();
     if (isValid) {
       const formData = new FormData(evt.target);
+
       toggleSubmitButton(true);
       await sendData(formData);
       closeFormModal();
@@ -89,6 +96,7 @@ async function onSubmitUserForm(evt) {
 }
 
 const openFormModal = () => {
+  loadUserPicture();
   resetEffects();
   imgUploadOverlay.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');
@@ -98,6 +106,8 @@ const openFormModal = () => {
 };
 
 const initFormModal = () => {
+  defaultPreviewImage = preview.src;
+
   uploadFile.addEventListener('change', openFormModal);
   initImageEffect();
   form.addEventListener('submit', onSubmitUserForm);
