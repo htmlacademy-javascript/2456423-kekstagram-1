@@ -39,6 +39,7 @@ const renderGallery = (gallery) => {
   gallery.forEach((picture) => {
     fragment.append(createPicture(picture));
   });
+
   picturesContainer.append(fragment);
   picturesContainer.addEventListener('click', onGalleryClick);
 };

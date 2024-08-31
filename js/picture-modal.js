@@ -1,6 +1,7 @@
 import { isEscapeKey } from './utils.js';
 
 const COMMENTS_NUMBER = 5;
+
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureCancel = document.querySelector('.big-picture__cancel');
 const bigPictureCommentsElement = bigPicture.querySelector('.social__comments');
@@ -8,7 +9,6 @@ const bigPictureCommentsLoader = bigPicture.querySelector('.social__comments-loa
 const socialCommentsCount = bigPicture.querySelector('.social__comment-count');
 
 let commentTemplate;
-
 let renderedCommentsCount = 0;
 let rawDescription;
 
@@ -28,7 +28,7 @@ const createComments = (comments) => {
 
 const onKeyEscapeKeydown = (evt) => {
   evt.preventDefault();
-  if(isEscapeKey(evt)) {
+  if (isEscapeKey(evt)) {
     handleCloseButtonClick();
   }
 };

@@ -24,8 +24,8 @@ const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
 const successDialog = document.querySelector('#success').content.querySelector('section');
 const errorDialog = document.querySelector('#error').content.querySelector('section');
-const fileChooser = document.querySelector('.img-upload__input');
 const preview = document.querySelector('.img-upload__preview img');
+const effectsPictures = document.querySelectorAll('.effects__preview');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -58,11 +58,18 @@ const isTextfieldFocused = () => document.activeElement === hashtagField || docu
 const onKeyEscapeKeydown = (evt) => {
   if (isEscapeKey(evt) && !isTextfieldFocused()) {
     evt.preventDefault();
-    closeFormModal();
+    onImgUploadCancelClick();
   }
 };
 
-function closeFormModal() {
+const resetPreview = () => {
+  effectsPictures.forEach((picture) => {
+    picture.removeAttribute('style');
+  });
+};
+
+function onImgUploadCancelClick() {
+  resetPreview();
   form.reset();
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
@@ -82,7 +89,7 @@ async function onSubmitUserForm(evt) {
       const formData = new FormData(evt.target);
       toggleSubmitButton(true);
       await sendData(formData);
-      closeFormModal();
+      onImgUploadCancelClick();
       showDialog(successDialog);
     }
   } catch(err) {
@@ -93,28 +100,35 @@ async function onSubmitUserForm(evt) {
 }
 
 const setPreview = () => {
-  const file = fileChooser.files[0];
+  const file = uploadFile.files[0];
   const fileName = file.name.toLowerCase();
 
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
 
-  if(matches) {
-    preview.src = URL.createObjectURL(file);
+  if (matches) {
+
+    const previewSrc = URL.createObjectURL(file);
+
+    preview.src = previewSrc;
+
+    effectsPictures.forEach((picture) => {
+      picture.setAttribute('style', `background-image: url("${previewSrc}");`);
+    });
   }
 };
 
-const openFormModal = () => {
+const onUploadFileClick = () => {
   setPreview();
   resetEffects();
   imgUploadOverlay.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');
 
   document.addEventListener('keydown', onKeyEscapeKeydown);
-  imgUploadCancel.addEventListener('click', closeFormModal);
+  imgUploadCancel.addEventListener('click', onImgUploadCancelClick);
 };
 
 const initFormModal = () => {
-  uploadFile.addEventListener('change', openFormModal);
+  uploadFile.addEventListener('change', onUploadFileClick);
   initImageEffect();
   form.addEventListener('submit', onSubmitUserForm);
 };

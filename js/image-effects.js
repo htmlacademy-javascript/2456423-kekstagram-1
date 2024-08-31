@@ -126,6 +126,7 @@ const imageScaleManage = () => {
 
 const initImageEffect = () => {
   document.querySelector('.img-upload__effect-level').classList.add('visually-hidden');
+
   noUiSlider.create(sliderElement, {
     range: {
       min: 0,
@@ -134,7 +135,9 @@ const initImageEffect = () => {
     start: 1,
     step: 0.1,
   });
+
   document.querySelectorAll('.effects__radio').forEach((effect) => effect.addEventListener('click', onRadioEffectChecked));
+
   imageScaleManage();
 };
 
