@@ -24,7 +24,8 @@ const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
 const successDialog = document.querySelector('#success').content.querySelector('section');
 const errorDialog = document.querySelector('#error').content.querySelector('section');
-const previewBlock = document.querySelector('.img-upload__preview');
+const fileChooser = document.querySelector('.img-upload__input');
+const preview = document.querySelector('.img-upload__preview img');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -62,7 +63,6 @@ const onKeyEscapeKeydown = (evt) => {
 };
 
 function closeFormModal() {
-  previewBlock.style.backgroundColor = '#ffffff';
   form.reset();
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
@@ -93,9 +93,6 @@ async function onSubmitUserForm(evt) {
 }
 
 const setPreview = () => {
-  const fileChooser = document.querySelector('.img-upload__input');
-  const preview = document.querySelector('.img-upload__preview img');
-
   const file = fileChooser.files[0];
   const fileName = file.name.toLowerCase();
 
@@ -103,7 +100,6 @@ const setPreview = () => {
 
   if(matches) {
     preview.src = URL.createObjectURL(file);
-    previewBlock.style.backgroundColor = 'transparent';
   }
 };
 
