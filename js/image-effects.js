@@ -61,7 +61,6 @@ let effectNameClass;
 const createEffectOnImage = () => {
   const nameEffect = effectSetting.nameEffect;
   const unitOfMeasure = effectSetting.unitOfMeasure;
-
   const effectValue = Number.isInteger(+sliderElement.noUiSlider.get()) ? +sliderElement.noUiSlider.get() : (+sliderElement.noUiSlider.get()).toFixed(1);
   sliderValue.value = effectValue;
   imagePreview.style.filter = `${nameEffect}(${effectValue}${unitOfMeasure})`;

@@ -3,15 +3,12 @@ import { initImageEffect } from './image-effects.js';
 import { resetEffects } from './image-effects.js';
 import { showDialog } from './dialogs.js';
 import { sendData } from './api.js';
-import { loadUserPicture } from './user-picture.js';
-
-const preview = document.querySelector('.img-upload__preview img');
-
-let defaultPreviewImage = null;
 
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
 const HASH_TAGS_COUNT = 5;
 const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
+
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
 const UploadButtonText = {
   DISABLED: 'Загружаем...',
@@ -27,6 +24,7 @@ const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
 const successDialog = document.querySelector('#success').content.querySelector('section');
 const errorDialog = document.querySelector('#error').content.querySelector('section');
+const previewBlock = document.querySelector('.img-upload__preview');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -64,7 +62,7 @@ const onKeyEscapeKeydown = (evt) => {
 };
 
 function closeFormModal() {
-  preview.src = defaultPreviewImage;
+  previewBlock.style.backgroundColor = '#ffffff';
   form.reset();
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
@@ -82,7 +80,6 @@ async function onSubmitUserForm(evt) {
     const isValid = pristine.validate();
     if (isValid) {
       const formData = new FormData(evt.target);
-
       toggleSubmitButton(true);
       await sendData(formData);
       closeFormModal();
@@ -95,8 +92,23 @@ async function onSubmitUserForm(evt) {
   }
 }
 
+const setPreview = () => {
+  const fileChooser = document.querySelector('.img-upload__input');
+  const preview = document.querySelector('.img-upload__preview img');
+
+  const file = fileChooser.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if(matches) {
+    preview.src = URL.createObjectURL(file);
+    previewBlock.style.backgroundColor = 'red';
+  }
+};
+
 const openFormModal = () => {
-  loadUserPicture();
+  setPreview();
   resetEffects();
   imgUploadOverlay.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');
@@ -106,8 +118,6 @@ const openFormModal = () => {
 };
 
 const initFormModal = () => {
-  defaultPreviewImage = preview.src;
-
   uploadFile.addEventListener('change', openFormModal);
   initImageEffect();
   form.addEventListener('submit', onSubmitUserForm);
