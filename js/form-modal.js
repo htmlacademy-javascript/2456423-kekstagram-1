@@ -103,7 +103,7 @@ const setPreview = () => {
 
   if(matches) {
     preview.src = URL.createObjectURL(file);
-    previewBlock.style.backgroundColor = 'red';
+    previewBlock.style.backgroundColor = 'transparent';
   }
 };
 
