@@ -105,12 +105,12 @@ const onRadioEffectChecked = (evt) => {
 const onClickButtonScale = ({target}) => {
   let scaleValue = parseInt(scaleControl.value, 10);
 
-  const downScale = target.classList.contains('scale__control--smaller');
-  const upScale = target.classList.contains('scale__control--bigger');
+  const scaleDown = target.classList.contains('scale__control--smaller');
+  const scaleUp = target.classList.contains('scale__control--bigger');
 
-  if(downScale && scaleValue > MIN_SCALE_VALUE) {
+  if (scaleDown && scaleValue > MIN_SCALE_VALUE) {
     scaleValue -= SCALE_STEP;
-  } else if(upScale && scaleValue < MAX_SCALE_VALUE) {
+  } else if (scaleUp && scaleValue < MAX_SCALE_VALUE) {
     scaleValue += SCALE_STEP;
   }
 
@@ -126,6 +126,7 @@ const imageScaleManage = () => {
 
 const initImageEffect = () => {
   document.querySelector('.img-upload__effect-level').classList.add('visually-hidden');
+
   noUiSlider.create(sliderElement, {
     range: {
       min: 0,
@@ -134,7 +135,9 @@ const initImageEffect = () => {
     start: 1,
     step: 0.1,
   });
+
   document.querySelectorAll('.effects__radio').forEach((effect) => effect.addEventListener('click', onRadioEffectChecked));
+
   imageScaleManage();
 };
 

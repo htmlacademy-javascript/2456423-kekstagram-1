@@ -20,7 +20,7 @@ const onGalleryClick = ({target}) => {
   const pictureId = target.closest('.picture')?.dataset.pictureId;
   const pictureData = pictures.find((element) => element.id === Number(pictureId));
 
-  if(pictureData) {
+  if (pictureData) {
     openPictureModal(pictureData);
   }
 };
@@ -39,6 +39,7 @@ const renderGallery = (gallery) => {
   gallery.forEach((picture) => {
     fragment.append(createPicture(picture));
   });
+
   picturesContainer.append(fragment);
   picturesContainer.addEventListener('click', onGalleryClick);
 };
