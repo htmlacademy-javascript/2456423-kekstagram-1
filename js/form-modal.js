@@ -27,6 +27,8 @@ const errorDialog = document.querySelector('#error').content.querySelector('sect
 const preview = document.querySelector('.img-upload__preview img');
 const effectsPictures = document.querySelectorAll('.effects__preview');
 
+let defaultPreviewSrc = null;
+
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
@@ -55,26 +57,32 @@ pristine.addValidator(
 
 const isTextfieldFocused = () => document.activeElement === hashtagField || document.activeElement === commentField;
 
-const onKeyEscapeKeydown = (evt) => {
-  if (isEscapeKey(evt) && !isTextfieldFocused()) {
-    evt.preventDefault();
-    onImgUploadCancelClick();
-  }
-};
-
 const resetPreview = () => {
+  preview.src = defaultPreviewSrc;
+
   effectsPictures.forEach((picture) => {
     picture.removeAttribute('style');
   });
 };
 
-function onImgUploadCancelClick() {
+const closeForm = () => {
   resetPreview();
   form.reset();
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
-}
+};
+
+const onKeyEscapeKeydown = (evt) => {
+  if (isEscapeKey(evt) && !isTextfieldFocused()) {
+    evt.preventDefault();
+    closeForm();
+  }
+};
+
+const onImgUploadCancelClick = () => {
+  closeForm();
+};
 
 const toggleSubmitButton = (disabled) => {
   uploadFile.disabled = disabled;
@@ -89,7 +97,7 @@ async function onSubmitUserForm(evt) {
       const formData = new FormData(evt.target);
       toggleSubmitButton(true);
       await sendData(formData);
-      onImgUploadCancelClick();
+      closeForm();
       showDialog(successDialog);
     }
   } catch(err) {
@@ -106,13 +114,14 @@ const setPreview = () => {
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
 
   if (matches) {
+    defaultPreviewSrc = preview.src;
 
     const previewSrc = URL.createObjectURL(file);
 
     preview.src = previewSrc;
 
     effectsPictures.forEach((picture) => {
-      picture.setAttribute('style', `background-image: url("${previewSrc}");`);
+      picture.style.backgroundImage = `url("${previewSrc}")`;
     });
   }
 };
@@ -124,11 +133,11 @@ const onUploadFileClick = () => {
   document.querySelector('body').classList.add('modal-open');
 
   document.addEventListener('keydown', onKeyEscapeKeydown);
-  imgUploadCancel.addEventListener('click', onImgUploadCancelClick);
 };
 
 const initFormModal = () => {
   uploadFile.addEventListener('change', onUploadFileClick);
+  imgUploadCancel.addEventListener('click', onImgUploadCancelClick);
   initImageEffect();
   form.addEventListener('submit', onSubmitUserForm);
 };
