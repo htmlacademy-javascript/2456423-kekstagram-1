@@ -1,4 +1,4 @@
-const effectsSetings = [
+const EffectsSetings = [
   {
     name: 'chrome',
     nameEffect: 'grayscale',
@@ -49,60 +49,66 @@ const effectsSetings = [
 const MIN_SCALE_VALUE = 25;
 const MAX_SCALE_VALUE = 100;
 const SCALE_STEP = 25;
+const EFFECT_NONE = 'none';
 
-const sliderElement = document.querySelector('.effect-level__slider');
+
 const imagePreview = document.querySelector('.img-upload__preview');
+const effectsRadio = document.querySelectorAll('.effects__radio');
+const sliderElement = document.querySelector('.effect-level__slider');
+const sliderFieldset = document.querySelector('.img-upload__effect-level');
 const sliderValue = document.querySelector('.effect-level__value');
 const scaleControl = document.querySelector('.scale__control--value');
+const scaleButtons = document.querySelectorAll('.scale__control');
 
-let effectSetting;
-let effectNameClass;
+
+let activeEffect;
+let activeEffectClass;
 
 const createEffectOnImage = () => {
-  const nameEffect = effectSetting.nameEffect;
-  const unitOfMeasure = effectSetting.unitOfMeasure;
+  const nameEffect = activeEffect.nameEffect;
+  const unitOfMeasure = activeEffect.unitOfMeasure;
   const effectValue = Number.isInteger(+sliderElement.noUiSlider.get()) ? +sliderElement.noUiSlider.get() : (+sliderElement.noUiSlider.get()).toFixed(1);
   sliderValue.value = effectValue;
   imagePreview.style.filter = `${nameEffect}(${effectValue}${unitOfMeasure})`;
 };
 
 const resetEffects = () => {
-  document.querySelector('.img-upload__effect-level').classList.add('visually-hidden');
-  effectNameClass = 'effects__preview--none';
-  imagePreview.classList.add(effectNameClass);
+  sliderFieldset.classList.add('visually-hidden');
+  activeEffectClass = 'effects__preview--none';
+  imagePreview.classList.add(activeEffectClass);
   imagePreview.removeAttribute('style');
   scaleControl.value = '100%';
+  activeEffect = 'null';
 };
 
-const onRadioEffectChecked = (evt) => {
-  imagePreview.classList.remove(effectNameClass);
+const onEffectChange = (evt) => {
+  imagePreview.classList.remove(activeEffectClass);
   const name = evt.target.value;
-  effectSetting = effectsSetings.find((element) => element.name === name);
-  if (name === 'none') {
+  if (name === EFFECT_NONE) {
     resetEffects();
     return;
   }
+  activeEffect = EffectsSetings.find((element) => element.name === name);
 
-  document.querySelector('.img-upload__effect-level').classList.remove('visually-hidden');
   sliderElement.noUiSlider.updateOptions({
     range: {
-      min: effectSetting.minValue,
-      max: effectSetting.maxValue,
+      min: activeEffect.minValue,
+      max: activeEffect.maxValue,
     },
-    start: effectSetting.startValue,
-    step: effectSetting.step,
+    start: activeEffect.startValue,
+    step: activeEffect.step,
   });
 
-  document.querySelector('.img-upload__effect-level').classList.remove('visually-hidden');
-  effectNameClass = `'effects__preview--${name}'`;
-  imagePreview.classList.add(effectNameClass);
+  sliderFieldset.classList.remove('visually-hidden');
+  activeEffectClass = `'effects__preview--${name}'`;
+  imagePreview.classList.add(activeEffectClass);
 
   createEffectOnImage();
 
   sliderElement.noUiSlider.on('update', createEffectOnImage);
 };
 
-const onClickButtonScale = ({target}) => {
+const onButtonScaleClick = ({target}) => {
   let scaleValue = parseInt(scaleControl.value, 10);
 
   const scaleDown = target.classList.contains('scale__control--smaller');
@@ -118,14 +124,14 @@ const onClickButtonScale = ({target}) => {
   imagePreview.style.transform = `scale(${scaleValue / 100})`;
 };
 
-const imageScaleManage = () => {
+const setImageScale = () => {
   scaleControl.value = '100%';
   imagePreview.style.transform = 'scale(1)';
-  document.querySelectorAll('.scale__control').forEach((button) => button.addEventListener('click', onClickButtonScale));
+  scaleButtons.forEach((button) => button.addEventListener('click', onButtonScaleClick));
 };
 
 const initImageEffect = () => {
-  document.querySelector('.img-upload__effect-level').classList.add('visually-hidden');
+  sliderFieldset.classList.add('visually-hidden');
 
   noUiSlider.create(sliderElement, {
     range: {
@@ -136,9 +142,9 @@ const initImageEffect = () => {
     step: 0.1,
   });
 
-  document.querySelectorAll('.effects__radio').forEach((effect) => effect.addEventListener('click', onRadioEffectChecked));
+  effectsRadio.forEach((effect) => effect.addEventListener('change', onEffectChange));
 
-  imageScaleManage();
+  setImageScale();
 };
 
 export { initImageEffect, resetEffects };

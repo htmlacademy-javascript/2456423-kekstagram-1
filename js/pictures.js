@@ -41,13 +41,13 @@ const renderGallery = (gallery) => {
   });
 
   picturesContainer.append(fragment);
-  picturesContainer.addEventListener('click', onGalleryClick);
 };
 
 const getPictures = () => pictures;
 
 const initGallery = (gallery) => {
   pictures = gallery;
+  picturesContainer.addEventListener('click', onGalleryClick);
   renderGallery(pictures);
 };
 

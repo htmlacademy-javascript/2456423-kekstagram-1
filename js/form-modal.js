@@ -7,6 +7,7 @@ import { sendData } from './api.js';
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
 const HASH_TAGS_COUNT = 5;
 const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
+const MAX_TAG_LENGTH = 20;
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
@@ -35,7 +36,7 @@ const pristine = new Pristine(form, {
   errorTextClass: 'img-upload__field-wrapper__error',
 });
 
-const hasValidCount = (tags) => tags.length <= HASH_TAGS_COUNT && tags.every((tag) => tag.length <= 20);
+const isCountValid = (tags) => tags.length <= HASH_TAGS_COUNT && tags.every((tag) => tag.length <= MAX_TAG_LENGTH);
 
 const hasUniqTags = (tags) => {
   const lowerCaseTags = tags.map((tag) => tag.toLowerCase());
@@ -46,7 +47,7 @@ const hasValidTags = (tags) => tags.every((tag) => VALID_SYMBOLS.test(tag));
 
 const hashTagsValidator = (value) => {
   const tags = value.trim().split(' ').filter((tag) => tag.trim().length);
-  return hasValidCount(tags) && hasUniqTags(tags) && hasValidTags(tags);
+  return isCountValid(tags) && hasUniqTags(tags) && hasValidTags(tags);
 };
 
 pristine.addValidator(
@@ -65,15 +66,7 @@ const resetPreview = () => {
   });
 };
 
-const closeForm = () => {
-  resetPreview();
-  form.reset();
-  pristine.reset();
-  imgUploadOverlay.classList.add('hidden');
-  document.querySelector('body').classList.remove('modal-open');
-};
-
-const onKeyEscapeKeydown = (evt) => {
+const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt) && !isTextfieldFocused()) {
     evt.preventDefault();
     closeForm();
@@ -83,6 +76,15 @@ const onKeyEscapeKeydown = (evt) => {
 const onImgUploadCancelClick = () => {
   closeForm();
 };
+
+function closeForm () {
+  resetPreview();
+  form.reset();
+  pristine.reset();
+  imgUploadOverlay.classList.add('hidden');
+  document.querySelector('body').classList.remove('modal-open');
+  document.removeEventListener('keydown', onDocumentKeydown);
+}
 
 const toggleSubmitButton = (disabled) => {
   uploadFile.disabled = disabled;
@@ -132,7 +134,7 @@ const onUploadFileClick = () => {
   imgUploadOverlay.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');
 
-  document.addEventListener('keydown', onKeyEscapeKeydown);
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 const initFormModal = () => {
