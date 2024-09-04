@@ -18,6 +18,11 @@ const createPicture = (picture) => {
 
 const onGalleryClick = ({target}) => {
   const pictureId = target.closest('.picture')?.dataset.pictureId;
+
+  if(!pictureId) {
+    return;
+  }
+
   const pictureData = pictures.find((element) => element.id === Number(pictureId));
 
   if (pictureData) {
@@ -51,4 +56,4 @@ const initGallery = (gallery) => {
   renderGallery(pictures);
 };
 
-export{renderGallery, initGallery, getPictures};
+export { renderGallery, initGallery, getPictures };

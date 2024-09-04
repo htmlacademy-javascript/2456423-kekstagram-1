@@ -5,8 +5,8 @@ import { showDialog } from './dialogs.js';
 import { sendData } from './api.js';
 
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
-const HASH_TAGS_COUNT = 5;
-const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
+const MAX_TAGS_COUNT = 5;
+const TAG_PATTERN = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_TAG_LENGTH = 20;
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
@@ -28,7 +28,7 @@ const errorDialog = document.querySelector('#error').content.querySelector('sect
 const preview = document.querySelector('.img-upload__preview img');
 const effectsPictures = document.querySelectorAll('.effects__preview');
 
-let defaultPreviewSrc = null;
+const defaultPreviewSrc = './img/upload-default-image.jpg';
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -36,23 +36,23 @@ const pristine = new Pristine(form, {
   errorTextClass: 'img-upload__field-wrapper__error',
 });
 
-const isCountValid = (tags) => tags.length <= HASH_TAGS_COUNT && tags.every((tag) => tag.length <= MAX_TAG_LENGTH);
+const isTagCountValid = (tags) => tags.length <= MAX_TAGS_COUNT && tags.every((tag) => tag.length <= MAX_TAG_LENGTH);
 
-const hasUniqTags = (tags) => {
+const isTagsUniq = (tags) => {
   const lowerCaseTags = tags.map((tag) => tag.toLowerCase());
   return tags.length === new Set(lowerCaseTags).size;
 };
 
-const hasValidTags = (tags) => tags.every((tag) => VALID_SYMBOLS.test(tag));
+const isTagsPatternValid = (tags) => tags.every((tag) => TAG_PATTERN.test(tag));
 
-const hashTagsValidator = (value) => {
+const isTagsValid = (value) => {
   const tags = value.trim().split(' ').filter((tag) => tag.trim().length);
-  return isCountValid(tags) && hasUniqTags(tags) && hasValidTags(tags);
+  return isTagCountValid(tags) && isTagsUniq(tags) && isTagsPatternValid(tags);
 };
 
 pristine.addValidator(
   hashtagField,
-  hashTagsValidator,
+  isTagsValid,
   HASH_TAGS_ERROR
 );
 
@@ -67,7 +67,7 @@ const resetPreview = () => {
 };
 
 const onDocumentKeydown = (evt) => {
-  if (isEscapeKey(evt) && !isTextfieldFocused()) {
+  if (isEscapeKey(evt.key) && !isTextfieldFocused()) {
     evt.preventDefault();
     closeForm();
   }
@@ -116,8 +116,6 @@ const setPreview = () => {
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
 
   if (matches) {
-    defaultPreviewSrc = preview.src;
-
     const previewSrc = URL.createObjectURL(file);
 
     preview.src = previewSrc;

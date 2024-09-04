@@ -11,7 +11,7 @@ const bigPictureCommentsLoader = bigPicture.querySelector('.social__comments-loa
 const socialCommentsCount = bigPicture.querySelector('.social__comment-count');
 
 let renderedCommentsCount = 0;
-let rawDescription;
+let photoComments;
 
 const createComments = (comments) => {
   const fragment = document.createDocumentFragment();
@@ -28,16 +28,16 @@ const createComments = (comments) => {
 };
 
 const renderComments = () => {
-  const visibleComments = rawDescription.comments.slice(renderedCommentsCount, renderedCommentsCount + COMMENTS_NUMBER);
+  const visibleComments = photoComments.comments.slice(renderedCommentsCount, renderedCommentsCount + COMMENTS_NUMBER);
   const comments = createComments(visibleComments);
   bigPictureCommentsElement.append(comments);
-  renderedCommentsCount = Math.min(renderedCommentsCount + COMMENTS_NUMBER, rawDescription.comments.length);
+  renderedCommentsCount = Math.min(renderedCommentsCount + COMMENTS_NUMBER, photoComments.comments.length);
 
-  if (renderedCommentsCount === rawDescription.comments.length) {
+  if (renderedCommentsCount === photoComments.comments.length) {
     bigPictureCommentsLoader.classList.add('hidden');
   }
 
-  socialCommentsCount.innerHTML = `${renderedCommentsCount} из  <span class="comments-count">${rawDescription.comments.length}</span>`;
+  socialCommentsCount.innerHTML = `${renderedCommentsCount} из  <span class="comments-count">${photoComments.comments.length}</span>`;
 };
 
 const onCommentsLoaderClick = () => {
@@ -46,7 +46,7 @@ const onCommentsLoaderClick = () => {
 
 const onDocumentKeydown = (evt) => {
   evt.preventDefault();
-  if (isEscapeKey(evt)) {
+  if (isEscapeKey(evt.key)) {
     closeModal();
   }
 };
@@ -65,13 +65,13 @@ const onCloseButtonClick = () => {
 };
 
 const openPictureModal = (data) => {
-  rawDescription = data;
+  photoComments = data;
   bigPicture.querySelector('img').src = data.url;
   bigPicture.querySelector('.likes-count').textContent = data.likes;
   bigPicture.querySelector('.comments-count').textContent = data.comments.length;
   bigPicture.querySelector('.social__caption').textContent = data.description;
 
-  if(bigPictureCommentsLoader.classList.contains('hidden')) {
+  if (bigPictureCommentsLoader.classList.contains('hidden')) {
     bigPictureCommentsLoader.classList.remove('hidden');
   }
 

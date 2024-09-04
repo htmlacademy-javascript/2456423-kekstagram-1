@@ -51,7 +51,6 @@ const MAX_SCALE_VALUE = 100;
 const SCALE_STEP = 25;
 const EFFECT_NONE = 'none';
 
-
 const imagePreview = document.querySelector('.img-upload__preview');
 const effectsRadio = document.querySelectorAll('.effects__radio');
 const sliderElement = document.querySelector('.effect-level__slider');
@@ -59,7 +58,6 @@ const sliderFieldset = document.querySelector('.img-upload__effect-level');
 const sliderValue = document.querySelector('.effect-level__value');
 const scaleControl = document.querySelector('.scale__control--value');
 const scaleButtons = document.querySelectorAll('.scale__control');
-
 
 let activeEffect;
 let activeEffectClass;

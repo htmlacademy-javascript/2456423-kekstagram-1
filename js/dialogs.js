@@ -8,7 +8,7 @@ let activeDialog;
 
 const onDocumentKeydown = (evt) => {
   evt.preventDefault();
-  if (isEscapeKey(evt)) {
+  if (isEscapeKey(evt.key)) {
     evt.stopPropagation();
     closeDialog();
   }
