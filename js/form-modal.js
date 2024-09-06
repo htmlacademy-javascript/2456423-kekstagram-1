@@ -1,6 +1,6 @@
 import { isEscapeKey } from './utils.js';
 import { initImageEffect } from './image-effects.js';
-import { resetEffects } from './image-effects.js';
+import { resetEffects, resetScaleControl } from './image-effects.js';
 import { showDialog } from './dialogs.js';
 import { sendData } from './api.js';
 
@@ -128,6 +128,7 @@ const setPreview = () => {
 
 const onUploadFileClick = () => {
   setPreview();
+  resetScaleControl();
   resetEffects();
   imgUploadOverlay.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');

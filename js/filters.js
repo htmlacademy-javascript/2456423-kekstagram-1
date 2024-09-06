@@ -15,7 +15,7 @@ const debounceRenderGallery = debounce(renderGallery, DEBOUNCE_DELAY);
 
 const getRandomPictures = (pictures) => pictures.toSorted(() => Math.random() - 0.5).slice(0, RANDOM_IMAGE_NUMBER);
 
-const getDiscussedPictures = (pictures) => pictures.toSorted((pictureA, pictureB) => pictureB.likes - pictureA.likes);
+const getDiscussedPictures = (pictures) => pictures.toSorted((pictureA, pictureB) => pictureB.comments.length - pictureA.comments.length);
 
 const getSortedPictures = (filterId) => {
   const pictures = getPictures();

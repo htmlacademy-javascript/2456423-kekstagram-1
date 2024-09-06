@@ -51,7 +51,7 @@ const MAX_SCALE_VALUE = 100;
 const SCALE_STEP = 25;
 const EFFECT_NONE = 'none';
 
-const imagePreview = document.querySelector('.img-upload__preview');
+const imagePreview = document.querySelector('.img-upload__preview img');
 const effectsRadio = document.querySelectorAll('.effects__radio');
 const sliderElement = document.querySelector('.effect-level__slider');
 const sliderFieldset = document.querySelector('.img-upload__effect-level');
@@ -74,9 +74,13 @@ const resetEffects = () => {
   sliderFieldset.classList.add('visually-hidden');
   activeEffectClass = 'effects__preview--none';
   imagePreview.classList.add(activeEffectClass);
-  imagePreview.removeAttribute('style');
-  scaleControl.value = '100%';
+  imagePreview.style.filter = '';
   activeEffect = 'null';
+};
+
+const resetScaleControl = () => {
+  scaleControl.value = '100%';
+  imagePreview.removeAttribute('style');
 };
 
 const onEffectChange = (evt) => {
@@ -123,7 +127,7 @@ const onButtonScaleClick = ({target}) => {
 };
 
 const setImageScale = () => {
-  scaleControl.value = '100%';
+  resetScaleControl();
   imagePreview.style.transform = 'scale(1)';
   scaleButtons.forEach((button) => button.addEventListener('click', onButtonScaleClick));
 };
@@ -138,6 +142,7 @@ const initImageEffect = () => {
     },
     start: 1,
     step: 0.1,
+    connect: 'lower',
   });
 
   effectsRadio.forEach((effect) => effect.addEventListener('change', onEffectChange));
@@ -145,4 +150,4 @@ const initImageEffect = () => {
   setImageScale();
 };
 
-export { initImageEffect, resetEffects };
+export { initImageEffect, resetEffects, resetScaleControl };
