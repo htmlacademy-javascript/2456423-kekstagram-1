@@ -130,7 +130,7 @@ const onUploadFileClick = () => {
   resetScaleControl();
   resetEffects();
   imgUploadOverlay.classList.remove('hidden');
-  document.querySelector('body').classList.add('modal-open');
+  document.body.classList.add('modal-open');
 
   document.addEventListener('keydown', onDocumentKeydown);
 };
