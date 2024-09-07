@@ -19,7 +19,7 @@ const createPicture = (picture) => {
 const onGalleryClick = ({target}) => {
   const pictureId = target.closest('.picture')?.dataset.pictureId;
 
-  if(!pictureId) {
+  if (!pictureId) {
     return;
   }
 

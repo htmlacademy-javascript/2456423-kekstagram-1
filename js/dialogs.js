@@ -1,10 +1,7 @@
 import { isEscapeKey } from './utils.js';
 
 const ALERT_SHOW_TIME = 5000;
-const ERROR_CLASS = 'error__inner';
-const SUCCESS_CLASS = 'success__inner';
-const ERROR_TITLE_CLASS = 'error__title';
-const SUCCESS_TITLE_CLASS = 'success__title';
+const CLOSE_ELEMENTS_ATTRIBUTE = 'data-dialog-close';
 
 const alert = document.querySelector('#alert').content.querySelector('.alert');
 
@@ -24,14 +21,8 @@ function closeDialog() {
   document.removeEventListener('keydown', onDocumentKeydown, true);
 }
 
-const isClickablePartActiveDialog = (evt) =>
-  evt.target.getAttribute('class') !== ERROR_CLASS &&
-  evt.target.getAttribute('class') !== SUCCESS_CLASS &&
-  evt.target.getAttribute('class') !== SUCCESS_TITLE_CLASS &&
-  evt.target.getAttribute('class') !== ERROR_TITLE_CLASS;
-
 const onActiveDialogClick = (evt) => {
-  if (isClickablePartActiveDialog(evt)) {
+  if (evt.target.hasAttribute(CLOSE_ELEMENTS_ATTRIBUTE)) {
     closeDialog();
   }
 };
@@ -40,7 +31,6 @@ const showDialog = (dialogTemplate) => {
   activeDialog = dialogTemplate.cloneNode(true);
   document.body.append(activeDialog);
   activeDialog.addEventListener('click', onActiveDialogClick);
-  activeDialog.querySelector('[data-close-button]')?.addEventListener('click', () => closeDialog());
   document.addEventListener('keydown', onDocumentKeydown, true);
 };
 

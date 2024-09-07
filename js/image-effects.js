@@ -75,7 +75,7 @@ const resetEffects = () => {
   activeEffectClass = 'effects__preview--none';
   imagePreview.classList.add(activeEffectClass);
   imagePreview.style.filter = '';
-  activeEffect = 'null';
+  activeEffect = null;
 };
 
 const resetScaleControl = () => {

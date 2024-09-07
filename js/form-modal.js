@@ -8,6 +8,7 @@ const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
 const MAX_TAGS_COUNT = 5;
 const TAG_PATTERN = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_TAG_LENGTH = 20;
+const DEFAULT_PREVIEW_SRC = './img/upload-default-image.jpg';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
@@ -27,8 +28,6 @@ const successDialog = document.querySelector('#success').content.querySelector('
 const errorDialog = document.querySelector('#error').content.querySelector('section');
 const preview = document.querySelector('.img-upload__preview img');
 const effectsPictures = document.querySelectorAll('.effects__preview');
-
-const defaultPreviewSrc = './img/upload-default-image.jpg';
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -59,7 +58,7 @@ pristine.addValidator(
 const isTextfieldFocused = () => document.activeElement === hashtagField || document.activeElement === commentField;
 
 const resetPreview = () => {
-  preview.src = defaultPreviewSrc;
+  preview.src = DEFAULT_PREVIEW_SRC;
 
   effectsPictures.forEach((picture) => {
     picture.removeAttribute('style');
@@ -82,7 +81,7 @@ function closeForm () {
   form.reset();
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
-  document.querySelector('body').classList.remove('modal-open');
+  document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
 }
 
