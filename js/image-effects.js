@@ -73,8 +73,9 @@ const createEffectOnImage = () => {
 const resetEffects = () => {
   sliderFieldset.classList.add('visually-hidden');
   activeEffectClass = 'effects__preview--none';
+  imagePreview.className = '';
   imagePreview.classList.add(activeEffectClass);
-  imagePreview.style.filter = '';
+  imagePreview.removeAttribute('style');
   activeEffect = null;
 };
 
@@ -102,7 +103,7 @@ const onEffectChange = (evt) => {
   });
 
   sliderFieldset.classList.remove('visually-hidden');
-  activeEffectClass = `'effects__preview--${name}'`;
+  activeEffectClass = `effects__preview--${name}`;
   imagePreview.classList.add(activeEffectClass);
 
   createEffectOnImage();
