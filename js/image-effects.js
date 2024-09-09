@@ -63,6 +63,10 @@ let activeEffect;
 let activeEffectClass;
 
 const createEffectOnImage = () => {
+  if (!activeEffect) {
+    return;
+  }
+
   const nameEffect = activeEffect.nameEffect;
   const unitOfMeasure = activeEffect.unitOfMeasure;
   const effectValue = Number.isInteger(+sliderElement.noUiSlider.get()) ? +sliderElement.noUiSlider.get() : (+sliderElement.noUiSlider.get()).toFixed(1);
@@ -75,7 +79,6 @@ const resetEffects = () => {
   activeEffectClass = 'effects__preview--none';
   imagePreview.className = '';
   imagePreview.classList.add(activeEffectClass);
-  imagePreview.removeAttribute('style');
   activeEffect = null;
 };
 
@@ -93,6 +96,10 @@ const onEffectChange = (evt) => {
   }
   activeEffect = EffectsSetings.find((element) => element.name === name);
 
+  if (!activeEffect) {
+    return;
+  }
+
   sliderElement.noUiSlider.updateOptions({
     range: {
       min: activeEffect.minValue,
@@ -107,8 +114,6 @@ const onEffectChange = (evt) => {
   imagePreview.classList.add(activeEffectClass);
 
   createEffectOnImage();
-
-  sliderElement.noUiSlider.on('update', createEffectOnImage);
 };
 
 const onButtonScaleClick = ({target}) => {
@@ -149,6 +154,8 @@ const initImageEffect = () => {
   effectsRadio.forEach((effect) => effect.addEventListener('change', onEffectChange));
 
   setImageScale();
+
+  sliderElement.noUiSlider.on('update', createEffectOnImage);
 };
 
 export { initImageEffect, resetEffects, resetScaleControl };

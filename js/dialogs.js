@@ -37,8 +37,8 @@ const showDialog = (dialogTemplate) => {
 const showAlert = (message) => {
   const alertContainer = alert.cloneNode(true);
 
-  document.body.append(alertContainer);
   alertContainer.querySelector('.alert__message').innerHTML = message;
+  document.body.append(alertContainer);
 
   setTimeout(() => {
     alertContainer.remove();

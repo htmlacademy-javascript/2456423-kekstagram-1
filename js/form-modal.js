@@ -79,6 +79,7 @@ const onImgUploadCancelClick = () => {
 function closeForm () {
   resetPreview();
   resetEffects();
+  preview.removeAttribute('style');
   form.reset();
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
