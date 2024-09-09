@@ -1,12 +1,14 @@
 import { isEscapeKey } from './utils.js';
 import { initImageEffect } from './image-effects.js';
-import { resetEffects } from './image-effects.js';
+import { resetEffects, resetScaleControl } from './image-effects.js';
 import { showDialog } from './dialogs.js';
 import { sendData } from './api.js';
 
 const HASH_TAGS_ERROR = 'Ошибка ввода хеш-тега';
-const HASH_TAGS_COUNT = 5;
-const VALID_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
+const MAX_TAGS_COUNT = 5;
+const TAG_PATTERN = /^#[a-zа-яё0-9]{1,19}$/i;
+const MAX_TAG_LENGTH = 20;
+const DEFAULT_PREVIEW_SRC = './img/upload-default-image.jpg';
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
@@ -33,47 +35,55 @@ const pristine = new Pristine(form, {
   errorTextClass: 'img-upload__field-wrapper__error',
 });
 
-const hasValidCount = (tags) => tags.length <= HASH_TAGS_COUNT && tags.every((tag) => tag.length <= 20);
+const isTagCountValid = (tags) => tags.length <= MAX_TAGS_COUNT && tags.every((tag) => tag.length <= MAX_TAG_LENGTH);
 
-const hasUniqTags = (tags) => {
+const isTagsUniq = (tags) => {
   const lowerCaseTags = tags.map((tag) => tag.toLowerCase());
   return tags.length === new Set(lowerCaseTags).size;
 };
 
-const hasValidTags = (tags) => tags.every((tag) => VALID_SYMBOLS.test(tag));
+const isTagsPatternValid = (tags) => tags.every((tag) => TAG_PATTERN.test(tag));
 
-const hashTagsValidator = (value) => {
+const isTagsValid = (value) => {
   const tags = value.trim().split(' ').filter((tag) => tag.trim().length);
-  return hasValidCount(tags) && hasUniqTags(tags) && hasValidTags(tags);
+  return isTagCountValid(tags) && isTagsUniq(tags) && isTagsPatternValid(tags);
 };
 
 pristine.addValidator(
   hashtagField,
-  hashTagsValidator,
+  isTagsValid,
   HASH_TAGS_ERROR
 );
 
 const isTextfieldFocused = () => document.activeElement === hashtagField || document.activeElement === commentField;
 
-const onKeyEscapeKeydown = (evt) => {
-  if (isEscapeKey(evt) && !isTextfieldFocused()) {
-    evt.preventDefault();
-    onImgUploadCancelClick();
-  }
-};
-
 const resetPreview = () => {
+  preview.src = DEFAULT_PREVIEW_SRC;
+
   effectsPictures.forEach((picture) => {
     picture.removeAttribute('style');
   });
 };
 
-function onImgUploadCancelClick() {
+const onDocumentKeydown = (evt) => {
+  if (isEscapeKey(evt.key) && !isTextfieldFocused()) {
+    evt.preventDefault();
+    closeForm();
+  }
+};
+
+const onImgUploadCancelClick = () => {
+  closeForm();
+};
+
+function closeForm () {
   resetPreview();
+  resetEffects();
   form.reset();
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
-  document.querySelector('body').classList.remove('modal-open');
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onDocumentKeydown);
 }
 
 const toggleSubmitButton = (disabled) => {
@@ -89,7 +99,7 @@ async function onSubmitUserForm(evt) {
       const formData = new FormData(evt.target);
       toggleSubmitButton(true);
       await sendData(formData);
-      onImgUploadCancelClick();
+      closeForm();
       showDialog(successDialog);
     }
   } catch(err) {
@@ -106,29 +116,29 @@ const setPreview = () => {
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
 
   if (matches) {
-
     const previewSrc = URL.createObjectURL(file);
 
     preview.src = previewSrc;
 
     effectsPictures.forEach((picture) => {
-      picture.setAttribute('style', `background-image: url("${previewSrc}");`);
+      picture.style.backgroundImage = `url("${previewSrc}")`;
     });
   }
 };
 
 const onUploadFileClick = () => {
   setPreview();
+  resetScaleControl();
   resetEffects();
   imgUploadOverlay.classList.remove('hidden');
-  document.querySelector('body').classList.add('modal-open');
+  document.body.classList.add('modal-open');
 
-  document.addEventListener('keydown', onKeyEscapeKeydown);
-  imgUploadCancel.addEventListener('click', onImgUploadCancelClick);
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 const initFormModal = () => {
   uploadFile.addEventListener('change', onUploadFileClick);
+  imgUploadCancel.addEventListener('click', onImgUploadCancelClick);
   initImageEffect();
   form.addEventListener('submit', onSubmitUserForm);
 };

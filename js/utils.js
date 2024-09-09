@@ -1,4 +1,4 @@
-const isEscapeKey = ({key}) => key === 'Escape';
+const isEscapeKey = (key) => key === 'Escape';
 
 const debounce = (callback, timeoutDelay = 500) => {
   let timeoutId;

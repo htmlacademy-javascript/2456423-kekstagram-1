@@ -18,6 +18,11 @@ const createPicture = (picture) => {
 
 const onGalleryClick = ({target}) => {
   const pictureId = target.closest('.picture')?.dataset.pictureId;
+
+  if (!pictureId) {
+    return;
+  }
+
   const pictureData = pictures.find((element) => element.id === Number(pictureId));
 
   if (pictureData) {
@@ -41,14 +46,14 @@ const renderGallery = (gallery) => {
   });
 
   picturesContainer.append(fragment);
-  picturesContainer.addEventListener('click', onGalleryClick);
 };
 
 const getPictures = () => pictures;
 
 const initGallery = (gallery) => {
   pictures = gallery;
+  picturesContainer.addEventListener('click', onGalleryClick);
   renderGallery(pictures);
 };
 
-export{renderGallery, initGallery, getPictures};
+export { renderGallery, initGallery, getPictures };

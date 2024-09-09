@@ -1,6 +1,7 @@
 import { isEscapeKey } from './utils.js';
 
 const ALERT_SHOW_TIME = 5000;
+const CLOSE_ELEMENTS_ATTRIBUTE = 'data-dialog-close';
 
 const alert = document.querySelector('#alert').content.querySelector('.alert');
 
@@ -8,7 +9,7 @@ let activeDialog;
 
 const onDocumentKeydown = (evt) => {
   evt.preventDefault();
-  if (isEscapeKey(evt)) {
+  if (isEscapeKey(evt.key)) {
     evt.stopPropagation();
     closeDialog();
   }
@@ -20,11 +21,16 @@ function closeDialog() {
   document.removeEventListener('keydown', onDocumentKeydown, true);
 }
 
+const onActiveDialogClick = (evt) => {
+  if (evt.target.hasAttribute(CLOSE_ELEMENTS_ATTRIBUTE)) {
+    closeDialog();
+  }
+};
+
 const showDialog = (dialogTemplate) => {
   activeDialog = dialogTemplate.cloneNode(true);
   document.body.append(activeDialog);
-  activeDialog.addEventListener('click', () => closeDialog());
-  activeDialog.querySelector('[data-close-button]')?.addEventListener('click', () => closeDialog());
+  activeDialog.addEventListener('click', onActiveDialogClick);
   document.addEventListener('keydown', onDocumentKeydown, true);
 };
 

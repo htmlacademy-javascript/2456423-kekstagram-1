@@ -1,16 +1,17 @@
 import { isEscapeKey } from './utils.js';
 
 const COMMENTS_NUMBER = 5;
+const DEFAULT_COMMENTS = 0;
 
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureCancel = document.querySelector('.big-picture__cancel');
 const bigPictureCommentsElement = bigPicture.querySelector('.social__comments');
+const commentTemplate = document.querySelector('#social__comment').content;
 const bigPictureCommentsLoader = bigPicture.querySelector('.social__comments-loader');
 const socialCommentsCount = bigPicture.querySelector('.social__comment-count');
 
-let commentTemplate;
 let renderedCommentsCount = 0;
-let rawDescription;
+let photoComments;
 
 const createComments = (comments) => {
   const fragment = document.createDocumentFragment();
@@ -26,49 +27,62 @@ const createComments = (comments) => {
   return fragment;
 };
 
-const onKeyEscapeKeydown = (evt) => {
-  evt.preventDefault();
-  if (isEscapeKey(evt)) {
-    handleCloseButtonClick();
-  }
-};
-
 const renderComments = () => {
-  bigPictureCommentsElement.append(createComments(rawDescription.comments.slice(renderedCommentsCount, renderedCommentsCount + COMMENTS_NUMBER)));
-  renderedCommentsCount = Math.min(renderedCommentsCount + COMMENTS_NUMBER, rawDescription.comments.length);
-  bigPictureCommentsLoader.disabled = renderedCommentsCount === rawDescription.comments.length;
-  socialCommentsCount.innerHTML = `${renderedCommentsCount} из  <span class="comments-count">${rawDescription.comments.length}</span>`;
+  const visibleComments = photoComments.comments.slice(renderedCommentsCount, renderedCommentsCount + COMMENTS_NUMBER);
+  const comments = createComments(visibleComments);
+  bigPictureCommentsElement.append(comments);
+  renderedCommentsCount = Math.min(renderedCommentsCount + COMMENTS_NUMBER, photoComments.comments.length);
+
+  if (renderedCommentsCount === photoComments.comments.length) {
+    bigPictureCommentsLoader.classList.add('hidden');
+  }
+
+  socialCommentsCount.innerHTML = `${renderedCommentsCount} из  <span class="comments-count">${photoComments.comments.length}</span>`;
 };
 
-const handleCommentsLoaderClick = () => {
+const onCommentsLoaderClick = () => {
   renderComments();
 };
 
-function handleCloseButtonClick() {
+const onDocumentKeydown = (evt) => {
+  evt.preventDefault();
+  if (isEscapeKey(evt.key)) {
+    closeModal();
+  }
+};
+
+function closeModal() {
   bigPicture.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onKeyEscapeKeydown);
-  bigPictureCommentsLoader.removeEventListener('click', handleCommentsLoaderClick) ;
-  renderedCommentsCount = 0;
+  document.removeEventListener('keydown', onDocumentKeydown);
+  bigPictureCommentsLoader.removeEventListener('click', onCommentsLoaderClick) ;
+  renderedCommentsCount = DEFAULT_COMMENTS;
+  bigPictureCommentsElement.innerHTML = '';
 }
 
-const openPictureModal = (description) => {
-  rawDescription = description;
-  bigPicture.querySelector('img').src = description.url;
-  bigPicture.querySelector('.likes-count').textContent = description.likes;
-  bigPicture.querySelector('.comments-count').textContent = description.comments.length;
-  bigPicture.querySelector('.social__caption').textContent = description.description;
+const onCloseButtonClick = () => {
+  closeModal();
+};
 
-  commentTemplate = document.querySelector('.social__comment');
-  bigPictureCommentsElement.innerHTML = ' ';
+const openPictureModal = (data) => {
+  photoComments = data;
+  bigPicture.querySelector('img').src = data.url;
+  bigPicture.querySelector('.likes-count').textContent = data.likes;
+  bigPicture.querySelector('.comments-count').textContent = data.comments.length;
+  bigPicture.querySelector('.social__caption').textContent = data.description;
+
+  if (bigPictureCommentsLoader.classList.contains('hidden')) {
+    bigPictureCommentsLoader.classList.remove('hidden');
+  }
+
   renderComments();
 
   bigPicture.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  document.addEventListener('keydown', onKeyEscapeKeydown);
+  document.addEventListener('keydown', onDocumentKeydown);
 
-  bigPictureCancel.addEventListener('click', handleCloseButtonClick);
-  bigPictureCommentsLoader.addEventListener('click', handleCommentsLoaderClick) ;
+  bigPictureCancel.addEventListener('click', onCloseButtonClick);
+  bigPictureCommentsLoader.addEventListener('click', onCommentsLoaderClick) ;
 };
 
 export {openPictureModal};
