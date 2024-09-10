@@ -79,6 +79,7 @@ const resetEffects = () => {
   activeEffectClass = 'effects__preview--none';
   imagePreview.className = '';
   imagePreview.classList.add(activeEffectClass);
+  imagePreview.style.filter = '';
   activeEffect = null;
 };
 
