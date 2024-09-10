@@ -77,8 +77,7 @@ const createEffectOnImage = () => {
 const resetEffects = () => {
   sliderFieldset.classList.add('visually-hidden');
   activeEffectClass = 'effects__preview--none';
-  imagePreview.className = '';
-  imagePreview.classList.add(activeEffectClass);
+  imagePreview.className = activeEffectClass;
   imagePreview.style.filter = '';
   activeEffect = null;
 };
